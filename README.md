@@ -8,8 +8,8 @@
 
 ## Features
 
-![](./images/feature1.gif)
-![](./images/feature2.gif)
+![](https://github.com/fanxq/code-blast-for-vscode/blob/master/images/feature1.gif)
+![](https://github.com/fanxq/code-blast-for-vscode/blob/master/images/feature2.gif)
 
 ## Extension Settings
 
