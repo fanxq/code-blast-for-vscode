@@ -8,7 +8,7 @@
         "type": "git",
         "url": "https://github.com/fanxq/code-blast-for-vscode.git"
     },
-    "icon": "https://github.com/fanxq/code-blast-for-vscode/blob/master/images/icon.png",
+    "icon": "images/icon.png",
     "engines": {
         "vscode": "^1.26.0"
     },
