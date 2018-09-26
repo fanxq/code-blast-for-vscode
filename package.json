@@ -1,0 +1,57 @@
+{
+    "name": "code-blast",
+    "displayName": "code-blast",
+    "description": "Particles blasts while typing in vscode with this extension",
+    "version": "0.0.1",
+    "publisher": "fanxq",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/fanxq/code-blast-for-vscode.git"
+    },
+    "icon": "images/icon.png",
+    "engines": {
+        "vscode": "^1.26.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "*"
+    ],
+    "main": "./extension",
+    "contributes": {
+        "configuration":{
+            "type":"object",
+            "title": "code-blast Configuration. code-blast插件的配置",
+            "properties": {
+                "codeBlast.enabled":{
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable the extension(code-blast). 是否启用code-blast。"
+                },
+                "codeBlast.shake.enabled":{
+                    "type":"boolean",
+                    "default":true,
+                    "description": "Enable shake effect. 是否启用shake效果。"
+                },
+                "codeBlast.particles.color":{
+                   "type":"string",
+                   "default":"",
+                   "pattern": "rgb\\s*\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*\\)",
+                   "description":  "Set particles color. 设置粒子的颜色，如rgb(0,0,0)。"
+                }
+            }
+        }
+    },
+    "scripts": {
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "node ./node_modules/vscode/bin/test"
+    },
+    "devDependencies": {
+        "typescript": "^2.6.1",
+        "vscode": "^1.1.6",
+        "eslint": "^4.6.1",
+        "@types/node": "^7.0.43",
+        "@types/mocha": "^2.2.42"
+    }
+}
