@@ -257,7 +257,7 @@ class EditorObserver {
                 if (mt.type == "attributes" && mt.target.className == "cursor ") {
                     if (mt.attributeName === "style") {
                         if (self.translateX == 0 && self.translateY == 0) {
-                            var linesContent = document.querySelector(".lines-content");
+                            var linesContent = document.querySelector(".editor-instance .lines-content");
                             if (linesContent) {
                                 var top = getComputedStyle(linesContent).top;
                                 var left = getComputedStyle(linesContent).left;

@@ -1,7 +1,3 @@
 # Change Log
-All notable changes to the "code-blast" extension will be documented in this file.
-
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## [Unreleased]
-- Initial release
+* 0.0.3 首次发布
+* 0.0.4 修复粒子显示位置不正确的问题
