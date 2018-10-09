@@ -2,7 +2,7 @@
     "name": "code-blast",
     "displayName": "code-blast",
     "description": "Particles blasts while typing in vscode with this extension",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "publisher": "fanxq",
     "repository": {
         "type": "git",
@@ -39,6 +39,16 @@
                    "default":"",
                    "pattern": "rgb\\s*\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*\\)",
                    "description":  "Set particles color. 设置粒子的颜色，如rgb(0,0,0)。"
+                },
+                "codeBlast.particles.shape":{
+                    "type":"string",
+                    "default":"dot",
+                    "enum": [
+                        "dot",
+                        "rectangle",
+                        "star"
+                    ],
+                    "description":"Set particles shape. 设置粒子的形状。"
                 }
             }
         }

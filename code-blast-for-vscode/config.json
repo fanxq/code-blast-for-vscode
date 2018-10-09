@@ -1,3 +1,7 @@
 {
-    "firstload": true
+    "firstload": true,
+    "shake": false,
+    "color": "",
+    "shape": "dot",
+    "rgb":""
 }

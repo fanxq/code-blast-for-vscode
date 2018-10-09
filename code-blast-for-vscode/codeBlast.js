@@ -89,6 +89,12 @@ class Particle {
             p.vy = Utility.random(-3, 3);
             p.wander = 0.15;
             p.theta = Utility.random(0, 360) * Math.PI / 180;
+        }else if(this.effect === 3){
+            p.size = Utility.random(4, 16);
+            p.vx = this.PARTICLE_VELOCITY_RANGE.x[0] + Math.random() *
+                    (this.PARTICLE_VELOCITY_RANGE.x[1] - this.PARTICLE_VELOCITY_RANGE.x[0]);
+            p.vy = this.PARTICLE_VELOCITY_RANGE.y[0] + Math.random() *
+                    (this.PARTICLE_VELOCITY_RANGE.y[1] - this.PARTICLE_VELOCITY_RANGE.y[0]);
         }
         return p;
     }
@@ -101,6 +107,7 @@ class Particle {
 
             if (this.effect === 1) { this.effect1(particle); }
             else if (this.effect === 2) { this.effect2(particle); }
+            else if(this.effect === 3){this.effect3(particle);}
         }
     }
 
@@ -135,18 +142,36 @@ class Particle {
         this.ctx.arc(Math.round(particle.x - 1), Math.round(particle.y - 1), particle.size, 0, 2 * Math.PI);
         this.ctx.fill();
     }
+
+    effect3(particle){
+        particle.vy += this.PARTICLE_GRAVITY;
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+
+        particle.alpha *= this.PARTICLE_ALPHA_FADEOUT;
+        var r = particle.size/2;
+        this.ctx.fillStyle = 'rgba(' + particle.color[0] + ',' + particle.color[1] + ',' + particle.color[2] + ',' + particle.alpha + ')';
+        this.ctx.beginPath();
+        for (let i = 0; i < 5; i++) {
+            this.ctx.lineTo(Math.cos((18+i*72)/180*Math.PI)*r+particle.x,-Math.sin((18+i*72)/180*Math.PI)*r+particle.y);
+            this.ctx.lineTo(Math.cos((54+i*72)/180*Math.PI)*r/2.4+particle.x,-Math.sin((54+i*72)/180*Math.PI)*r/2.4+particle.y);
+        }
+        this.ctx.closePath();
+        this.ctx.fill();
+    }
 }
 class EditorObserver {
     constructor(editor, editorContainer) {
-        //this.cursorCoords = { left: 0, top: 0 };
         this.cursorPos = { left: 0, top: 0 };
+        this.cursorOffsetTop = 0;
         this.shakeTime = 0;
         this.shakeTimeMax = 0;
         this.shakeIntensity = 5;
         this.lastTime = 0;
 		this.w = editorContainer.clientWidth;
         this.h = editorContainer.clientHeight;
-        this.effect = 2;
+        //this.effect = 2;
+        this.effect = effectMap.get((config && config.particleShape) || 'dot');
         this.isActive = false;
         this.editor = editor;
         this.translateY = 0;
@@ -179,8 +204,8 @@ class EditorObserver {
         this.observer = null;
     }
 
-    shake(editor, time) {
-        this.cmNode = this.editor;
+    shake(node, time) {
+        this.cmNode = node;
         this.shakeTime = this.shakeTimeMax = time;
     }
 
@@ -224,6 +249,9 @@ class EditorObserver {
                     this.isShaking = false;
                 }
             }
+            Array.from(document.querySelectorAll('.view-line.shake')).forEach((x)=>{
+                x.classList.remove('shake');
+            })
         }
         this.particleService.drawParticles();
         requestAnimationFrame(this.loop.bind(this));
@@ -269,6 +297,7 @@ class EditorObserver {
                         self.cursorPos.left = self.translateX < 0 ? mt.target.offsetLeft + 67 + self.translateX : mt.target.offsetLeft + 67;
                         self.cursorPos.top = self.translateY < 0 ? mt.target.offsetTop + self.translateY : mt.target.offsetTop;
                         self.particleService.setCursorPositon(self.cursorPos);
+                        self.cursorOffsetTop = mt.target.offsetTop;
                         //console.log("cursor position(relative to  the editor):");
                         //console.log(self.cursorPos);
                     }
@@ -296,7 +325,7 @@ class EditorObserver {
                             } else {
                                 if (self.lines[index].data !== text) {
                                     if(config && config.shake){
-                                        self.throttledShake(self.editor, 0.3);
+                                       self.cursorOffsetTop === lineTop && self.throttledShake(mt.addedNodes[0], 0.3);
                                     }
                                     self.throttledSpawnParticles(self.editor);
                                 }
@@ -318,6 +347,12 @@ class EditorObserver {
     }
 }
 
+var config = {};
+
+var effectMap = new Map();
+effectMap.set("rectangle",1);
+effectMap.set("dot",2);
+effectMap.set("star",3);
 var observerMap= new Map();
 let observer = new MutationObserver(function (mutations) {
     mutations.forEach(function (mutation) {

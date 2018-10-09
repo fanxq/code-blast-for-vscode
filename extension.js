@@ -4,8 +4,10 @@ const vscode = require('vscode');
 const path = require('path');
 const fs = require('fs');
 const base = path.dirname(require.main.filename);
-const indexDir = path.join(base, 'vs', 'workbench', 'electron-browser', 'bootstrap');
+let indexDir = path.join(base, 'vs', 'workbench', 'electron-browser', 'bootstrap');
+let indexFileName = "index.html";
 const extensionPath = vscode.extensions.getExtension('fanxq.code-blast').extensionPath;
+const configPath = path.join(extensionPath, 'code-blast-for-vscode/config.json');
 function showRestartWindowsInfo(info){
     vscode.window.showInformationMessage(info, { title: "Restart vscode" })
     .then(function (item) {
@@ -31,7 +33,7 @@ class CodeBlast{
     }
     install(isFirstLoad){
         let hackFiles = ['codeBlast.js','shakeEffect.css'];
-        let originalIndexFileName = path.join(indexDir, 'index.html');
+        let originalIndexFileName = path.join(indexDir, indexFileName);
         let indexFileContent = fs.readFileSync(originalIndexFileName).toString('utf8');
         let isHack = fs.existsSync(path.join(indexDir,'codeBlast.js')) && indexFileContent && ~indexFileContent.indexOf('codeBlast.js');
         let config  = vscode.workspace.getConfiguration('codeBlast');
@@ -41,6 +43,8 @@ class CodeBlast{
         }
         let shakeEnabled = config.get('shake.enabled');
         let particlesColor = config.get('particles.color');
+        let particlesShape = config.get('particles.shape');
+        let settings = this.getConfig();
         if(config.enabled){
             if(!isHack){
                 if(indexFileContent){
@@ -50,11 +54,6 @@ class CodeBlast{
                     if(indexFileContent.indexOf('codeBlast.js') === -1){
                         indexFileContent = indexFileContent.replace('</html>',`\t<script src="codeBlast.js"></script></html>`);
                     }
-                    // try {
-                    //     fs.writeFileSync(originalIndexFileName,indexFileContent,'utf8');
-                    // } catch (error) {
-                    //     vscode.window.showWarningMessage('code-blast encountered a error during running, please reopen vscode with the administrator authority');
-                    // }
                     writeFileSync(originalIndexFileName, indexFileContent);
                 }
                 hackFiles.forEach((filename)=>{
@@ -64,39 +63,44 @@ class CodeBlast{
                 });
                
             } 
-
-            var configuration = 'var config = {}; ';
-            if(shakeEnabled){
-                configuration += 'config.shake = true; ';
+            var isConfigChanged = false;
+            if(settings && typeof(settings.shake)!=='undefined' && settings.shake !== shakeEnabled){
+                settings.shake = shakeEnabled;
+                isConfigChanged = true; 
             }
-            if(particlesColor){
-                var rgbStr = /rgb\s*\((\s*\d+\s*,\s*\d+\s*,\s*\d+\s*)\)/.exec(particlesColor);
-                if(rgbStr && rgbStr.length > 1){
-                    var rgb = rgbStr[1].split(',');
-                    rgb = rgb.map((x)=>{return parseInt(x);});
-                    configuration += `config.particleColor = [${rgb}]; `;
+            if(settings && typeof(settings.color)!=='undefined' && settings.color !== particlesColor){
+                if(particlesColor){
+                    var rgbStr = /rgb\s*\((\s*\d+\s*,\s*\d+\s*,\s*\d+\s*)\)/.exec(particlesColor);
+                    if(rgbStr && rgbStr.length > 1){
+                        var rgb = rgbStr[1].split(',');
+                        rgb = rgb.map((x)=>{return parseInt(x);});
+                        settings.rgb = rgbStr[1];
+                        settings.color = particlesColor;
+                        isConfigChanged = true;
+                    }
                 }
             }
-            let hackFile = path.join(extensionPath, 'code-blast-for-vscode/codeBlast.js');
-            let dstFile = path.join(indexDir,'codeBlast.js');
-            let fileContent =  fs.readFileSync(hackFile).toString('utf8');
-            fileContent = configuration + fileContent;
-            //fs.writeFileSync(dstFile,fileContent,'utf8');
-            writeFileSync(dstFile, fileContent);
+            if(settings && typeof(settings.shape)!=='undefined' && settings.shape !== particlesShape){
+                settings.shape = particlesShape;
+                isConfigChanged = true;
+            }
+            if(isConfigChanged){
+                this.writeConfigToHackFile(settings);
+                this.saveConfig(settings);
+            } 
             if(!isHack){
+                this.writeConfigToHackFile(settings);
                 showRestartWindowsInfo("code-blast is enabled, please restart vscode!");
             }else{
-                showRestartWindowsInfo("configruation of code-blast is changed, please restart vscode!");
+                if(isConfigChanged){
+                    showRestartWindowsInfo("configruation of code-blast is changed, please restart vscode!");
+                }
             }
         }else{
             if(isHack){
                 indexFileContent = indexFileContent.replace('\t<link rel="stylesheet" href="shakeEffect.css"></head>','</head>');
                 indexFileContent = indexFileContent.replace('\t<script src="codeBlast.js"></script></html>','</html>');
-                // try {
-                //     fs.writeFileSync(originalIndexFileName,indexFileContent,'utf8');
-                // } catch (error) {
-                //     vscode.window.showWarningMessage('code-blast encountered a error during running, please reopen vscode with the administrator authority');
-                // }
+                
                 writeFileSync(originalIndexFileName, indexFileContent);
                 hackFiles.forEach((filename)=>{
                     let hackFile = path.join(indexDir, filename);
@@ -127,6 +131,31 @@ class CodeBlast{
 
         return false;
     }
+    saveConfig(settings){
+        if(settings && typeof(settings.firstload) !== undefined){
+            fs.writeFileSync(configPath, JSON.stringify(settings, null, '    '), 'utf-8');
+        }
+    }
+
+    writeConfigToHackFile(settings){
+        let configuration = 'var config = {}; ';
+        configuration += `config.shake = ${settings.shake.toString()};`
+        if(settings.rgb){
+            configuration += `config.particleColor = [${settings.rgb}]; `;
+        }
+        configuration += `config.particleShape = '${settings.shape}';`;
+        let hackFile = path.join(extensionPath, 'code-blast-for-vscode/codeBlast.js');
+        let dstFile = path.join(indexDir,'codeBlast.js');
+        let fileContent =  fs.readFileSync(hackFile).toString('utf8');
+        fileContent = fileContent.replace("var config = {};",configuration);
+        writeFileSync(dstFile, fileContent);
+    }
+
+    getConfig(){
+        let settings = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+        return settings;
+    }
+
     watch(){
         this.initialize();
         return vscode.workspace.onDidChangeConfiguration(() => this.install(false));
@@ -140,7 +169,13 @@ function activate(context) {
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
     console.log('Congratulations, your extension "code-blast" is now active!');
-  
+    console.log(vscode.version);
+    var versionInfos = vscode.version.split('.');
+    var version = parseInt(versionInfos[1]);
+    if(version > 27){
+        indexDir = path.join(base, "vs", "code","electron-browser","workbench");
+        indexFileName = "workbench.html";
+    }
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with  registerCommand
     // The commandId parameter must match the command field in package.json
