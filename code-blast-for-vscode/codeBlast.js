@@ -62,11 +62,15 @@ class Particle {
     }
 
     spawnParticles(cm, type) {
-        var numParticles = Utility.random(this.PARTICLE_NUM_RANGE.min, this.PARTICLE_NUM_RANGE.max);
-        for (var i = numParticles; i--;) {
-            this.particles[this.particlePointer] = this.createParticle(this.cursorPos.left + 10, this.cursorPos.top, this.color);
-            this.particlePointer = (this.particlePointer + 1) % this.MAX_PARTICLES;
-        }
+        if(this.effect === 4){
+            this.particles[0] = this.createParticle(this.cursorPos.left + 10, this.cursorPos.top, this.color);
+        }else{
+            var numParticles = Utility.random(this.PARTICLE_NUM_RANGE.min, this.PARTICLE_NUM_RANGE.max);
+            for (var i = numParticles; i--;) {
+                this.particles[this.particlePointer] = this.createParticle(this.cursorPos.left + 10, this.cursorPos.top, this.color);
+                this.particlePointer = (this.particlePointer + 1) % this.MAX_PARTICLES;
+            }
+        }   
     }
 
     createParticle(x, y, color) {
@@ -95,6 +99,17 @@ class Particle {
                     (this.PARTICLE_VELOCITY_RANGE.x[1] - this.PARTICLE_VELOCITY_RANGE.x[0]);
             p.vy = this.PARTICLE_VELOCITY_RANGE.y[0] + Math.random() *
                     (this.PARTICLE_VELOCITY_RANGE.y[1] - this.PARTICLE_VELOCITY_RANGE.y[0]);
+        }else if(this.effect === 4){
+            p.vx = Utility.random(-1,1);
+            p.vy = Utility.random(-2,-1);
+            p.text = (config.texts && config.texts.length > 0 && config.texts[Utility.random(0, config.texts.length-1)])||"hello";
+        }else if(this.effect === 5){
+            p.size = Utility.random(2, 8);
+            p.drag = 0.92;
+            p.vx = Utility.random(-3, 3);
+            p.vy = Utility.random(-3, 3);
+            p.wander = 0.15;
+            p.theta = Utility.random(0, 360) * Math.PI / 180;
         }
         return p;
     }
@@ -108,6 +123,8 @@ class Particle {
             if (this.effect === 1) { this.effect1(particle); }
             else if (this.effect === 2) { this.effect2(particle); }
             else if(this.effect === 3){this.effect3(particle);}
+            else if(this.effect === 4){this.effect4(particle);}
+            else if(this.effect === 5){this.effect5(particle);}
         }
     }
 
@@ -159,6 +176,39 @@ class Particle {
         this.ctx.closePath();
         this.ctx.fill();
     }
+
+    effect4(particle){
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        particle.alpha *= this.PARTICLE_ALPHA_FADEOUT;
+        
+        this.ctx.font = "14px Consolas, 'Courier New', monospace";
+        this.ctx.fillStyle = 'rgba(' + particle.color[0] + ',' + particle.color[1] + ',' + particle.color[2] + ',' + particle.alpha + ')';
+        this.ctx.fillText(particle.text,particle.x,particle.y);       
+    }
+
+    effect5(particle){
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        particle.vx *= particle.drag;
+        particle.vy *= particle.drag;
+        particle.theta += Utility.random(-0.5, 0.5);
+        particle.vx += Math.sin(particle.theta) * 0.1;
+        particle.vy += Math.cos(particle.theta) * 0.1;
+        particle.size *= 0.96;
+        this.ctx.save();
+        this.ctx.translate(particle.x,particle.y);
+        this.ctx.scale(particle.size, particle.size);
+        this.ctx.beginPath();
+        this.ctx.arc(-1,0,1,Math.PI,0,false);
+        this.ctx.arc(1,0,1,Math.PI,0,false);
+        this.ctx.bezierCurveTo(1.9, 1.2, 0.6, 1.6, 0, 3.0);
+        this.ctx.bezierCurveTo( -0.6, 1.6,-1.9, 1.2,-2,0);
+        this.ctx.closePath();
+        this.ctx.fillStyle = 'rgba(' + particle.color[0] + ',' + particle.color[1] + ',' + particle.color[2] + ',' + particle.alpha + ')';
+        this.ctx.fill(); 
+        this.ctx.restore();
+    }
 }
 class EditorObserver {
     constructor(editor, editorContainer) {
@@ -181,20 +231,24 @@ class EditorObserver {
         this.canvas = null;
         this.ctx = null;       
         if (editor && editorContainer) {
-            var canvas = document.createElement('canvas');
+            var canvas = editorContainer.querySelector('CANVAS#code-blast-canvas');
+            if(!canvas){
+                canvas = document.createElement('canvas');
+                editorContainer.appendChild(canvas);
+            }
             var ctx = canvas.getContext('2d');
-            canvas.id = 'code-blast-canvas-' + new Date().getTime();
+            canvas.id = 'code-blast-canvas';
             canvas.style.position = 'absolute';
             canvas.style.top = 0;
             canvas.style.left = 0;
-            canvas.style.zIndex = 1;
+            canvas.style.zIndex = 9999;
             canvas.style.pointerEvents = 'none';
             canvas.style.willChange = 'transform';
             canvas.width = editor.clientWidth;
             canvas.height = editor.clientHeight;
             this.canvas = canvas;
             this.ctx = ctx;
-            editorContainer.appendChild(this.canvas);
+
         }
         this.particleService = new Particle(this.ctx, this.effect);
         this.setParticlesColor();
@@ -249,9 +303,6 @@ class EditorObserver {
                     this.isShaking = false;
                 }
             }
-            Array.from(document.querySelectorAll('.view-line.shake')).forEach((x)=>{
-                x.classList.remove('shake');
-            })
         }
         this.particleService.drawParticles();
         requestAnimationFrame(this.loop.bind(this));
@@ -324,10 +375,13 @@ class EditorObserver {
                                 self.lines[index].data = text;
                             } else {
                                 if (self.lines[index].data !== text) {
-                                    if(config && config.shake){
-                                       self.cursorOffsetTop === lineTop && self.throttledShake(mt.addedNodes[0], 0.3);
+                                    let isDebuging = _debugTool?(window.getComputedStyle(_debugTool).display === 'none'?false:true):false;
+                                    if(!isDebuging){
+                                        if(config && config.shake){
+                                            self.cursorOffsetTop === lineTop && self.throttledShake(mt.target, 0.3);
+                                         }
+                                         self.throttledSpawnParticles(self.editor);
                                     }
-                                    self.throttledSpawnParticles(self.editor);
                                 }
                                 self.lines[index].data = text;
                             }
@@ -348,16 +402,19 @@ class EditorObserver {
 }
 
 var config = {};
-
+var _debugTool = null;
 var effectMap = new Map();
 effectMap.set("rectangle",1);
 effectMap.set("dot",2);
 effectMap.set("star",3);
+effectMap.set("text",4);
+effectMap.set("heart",5);
 var observerMap= new Map();
 let observer = new MutationObserver(function (mutations) {
     mutations.forEach(function (mutation) {
         if (mutation.target.classList.contains("editor-instance") && mutation.target.getAttribute("id") === "workbench.editors.files.textFileEditor") {
             if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                _debugTool = document.querySelector('.debug-toolbar');
                 var monaco_editor = mutation.addedNodes[0];
                 if (monaco_editor.classList.contains('monaco-editor')) {
                     var container = monaco_editor.parentNode;

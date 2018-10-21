@@ -3,5 +3,6 @@
     "shake": false,
     "color": "",
     "shape": "dot",
-    "rgb":""
+    "rgb": "",
+    "customTexts": []
 }

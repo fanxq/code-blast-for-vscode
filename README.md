@@ -9,7 +9,12 @@
 ## Features
 
 ![](./images/feature1.gif)
-![](./images/feature2.gif)
+### Particles effects
+![](./images/effect1.gif)
+![](./images/effect2.gif)
+![](./images/effect3.gif)
+![](./images/effect4.gif)
+![](./images/effect5.gif)
 
 ## Extension Settings
 
@@ -17,6 +22,7 @@
 * `codeBlast.enable`: 启用/禁用插件
 * `codeBlast.shake.enabled`: 启用/禁用shake效果
 * `codeBlast.particles.color`: 设置粒子的颜色
+* `codeBlast.particles.shape`: 设置粒子的形状
 
 ## Known Issues
 

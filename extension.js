@@ -44,6 +44,7 @@ class CodeBlast{
         let shakeEnabled = config.get('shake.enabled');
         let particlesColor = config.get('particles.color');
         let particlesShape = config.get('particles.shape');
+        let particlesTexts = config.get('particles.texts');
         let settings = this.getConfig();
         if(config.enabled){
             if(!isHack){
@@ -83,6 +84,16 @@ class CodeBlast{
             if(settings && typeof(settings.shape)!=='undefined' && settings.shape !== particlesShape){
                 settings.shape = particlesShape;
                 isConfigChanged = true;
+            }
+            if(settings && typeof(settings.customTexts)!=='undefined' && particlesTexts){
+                particlesTexts.forEach((x)=>{
+                    let text = x.trim();
+                    if(text && !settings.customTexts.includes(text)){
+                        settings.customTexts = particlesTexts.filter(y=>y.trim()).map(y=>y.trim());
+                        isConfigChanged = true;
+                        return;
+                    }
+                })
             }
             if(isConfigChanged){
                 this.writeConfigToHackFile(settings);
@@ -144,6 +155,8 @@ class CodeBlast{
             configuration += `config.particleColor = [${settings.rgb}]; `;
         }
         configuration += `config.particleShape = '${settings.shape}';`;
+
+        configuration += `config.texts = [${settings.customTexts.map(x=>'\"' + x + '\"').toString()}];`;
         let hackFile = path.join(extensionPath, 'code-blast-for-vscode/codeBlast.js');
         let dstFile = path.join(indexDir,'codeBlast.js');
         let fileContent =  fs.readFileSync(hackFile).toString('utf8');

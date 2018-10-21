@@ -2,7 +2,7 @@
     "name": "code-blast",
     "displayName": "code-blast",
     "description": "Particles blasts while typing in vscode with this extension",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "publisher": "fanxq",
     "repository": {
         "type": "git",
@@ -46,9 +46,19 @@
                     "enum": [
                         "dot",
                         "rectangle",
-                        "star"
+                        "star",
+                        "heart",
+                        "text"
                     ],
                     "description":"Set particles shape. 设置粒子的形状。"
+                },
+                "codeBlast.particles.texts":{
+                    "type":"array",
+                    "items": {
+                        "type":"string"
+                    },
+                    "default":["hello world"],
+                    "description": "Set texts you like when setting the 'codeBlast.particles.shape' to 'text'.当粒子形状设置为'text'时，你可以自定义要显示的文本。"
                 }
             }
         }
