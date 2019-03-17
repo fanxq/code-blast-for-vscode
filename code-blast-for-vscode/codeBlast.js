@@ -17,12 +17,15 @@
         }
 
         static random(min, max) {
-            if (!max) { max = min; min = 0; }
+            if (!max) {
+                max = min;
+                min = 0;
+            }
             return min + ~~(Math.random() * (max - min + 1))
         }
 
         static getAccessibleColor(rgb) {
-            let [ r, g, b ] = rgb;
+            let [r, g, b] = rgb;
             let colors = [r / 255, g / 255, b / 255];
             let c = colors.map((col) => {
                 if (col <= 0.03928) {
@@ -31,9 +34,9 @@
                 return Math.pow((col + 0.055) / 1.055, 2.4);
             });
             let L = (0.2126 * c[0]) + (0.7152 * c[1]) + (0.0722 * c[2]);
-            return (L > 0.179)
-                ? [ 0, 0, 0 ]
-                : [ 255, 255, 255 ];
+            return (L > 0.179) ?
+                [0, 0, 0] :
+                [255, 255, 255];
         }
     }
 
@@ -50,14 +53,20 @@
             this.particles = [];
             this.particlePointer = 0;
             this.MAX_PARTICLES = 500;
-            this.PARTICLE_NUM_RANGE = { min: 5, max: 10 };
+            this.PARTICLE_NUM_RANGE = {
+                min: 5,
+                max: 10
+            };
             this.PARTICLE_GRAVITY = 0.08;
             this.PARTICLE_ALPHA_FADEOUT = 0.96;
             this.PARTICLE_VELOCITY_RANGE = {
                 x: [-1, 1],
                 y: [-3.5, -1.5]
             };
-            this.cursorPos = { left: 0, top: 0 };
+            this.cursorPos = {
+                left: 0,
+                top: 0
+            };
             this.color = [0, 0, 0];
         }
 
@@ -65,11 +74,11 @@
             this.cursorPos = value;
         }
 
-        setColor(value){
+        setColor(value) {
             this.color = value;
         }
 
-        spawnParticles(){
+        spawnParticles() {
             var numParticles = Utility.random(this.PARTICLE_NUM_RANGE.min, this.PARTICLE_NUM_RANGE.max);
             for (var i = numParticles; i--;) {
                 this.particles[this.particlePointer] = this.createParticle(this.cursorPos.left + 10, this.cursorPos.top, this.color);
@@ -77,17 +86,19 @@
             }
         }
 
-        drawParticles(){
+        drawParticles() {
             var particle;
             for (var i = this.particles.length; i--;) {
                 particle = this.particles[i];
-                if (!particle || particle.alpha < 0.01 || particle.size <= 0.5) { continue; }
+                if (!particle || particle.alpha < 0.01 || particle.size <= 0.5) {
+                    continue;
+                }
                 this.drawParticle(particle);
             }
         }
 
-        createParticle(){}
-        drawParticle(p){}
+        createParticle() {}
+        drawParticle(p) {}
     }
 
     class RectParticleEffectManager extends ParticleEffectManager {
@@ -95,7 +106,7 @@
             super(ctx);
         }
 
-        createParticle(x, y, color){
+        createParticle(x, y, color) {
             var p = {
                 x: x,
                 y: y + 10,
@@ -104,13 +115,13 @@
             };
             p.size = Utility.random(2, 4);
             p.vx = this.PARTICLE_VELOCITY_RANGE.x[0] + Math.random() *
-                    (this.PARTICLE_VELOCITY_RANGE.x[1] - this.PARTICLE_VELOCITY_RANGE.x[0]);
+                (this.PARTICLE_VELOCITY_RANGE.x[1] - this.PARTICLE_VELOCITY_RANGE.x[0]);
             p.vy = this.PARTICLE_VELOCITY_RANGE.y[0] + Math.random() *
-                    (this.PARTICLE_VELOCITY_RANGE.y[1] - this.PARTICLE_VELOCITY_RANGE.y[0]);
+                (this.PARTICLE_VELOCITY_RANGE.y[1] - this.PARTICLE_VELOCITY_RANGE.y[0]);
             return p;
         }
 
-        drawParticle(particle){
+        drawParticle(particle) {
             particle.vy += this.PARTICLE_GRAVITY;
             particle.x += particle.vx;
             particle.y += particle.vy;
@@ -126,7 +137,7 @@
             super(ctx);
         }
 
-        createParticle(x, y, color){
+        createParticle(x, y, color) {
             var p = {
                 x: x,
                 y: y + 10,
@@ -142,7 +153,7 @@
             return p;
         }
 
-        drawParticle(particle){
+        drawParticle(particle) {
             particle.x += particle.vx;
             particle.y += particle.vy;
             particle.vx *= particle.drag;
@@ -163,7 +174,7 @@
             super(ctx);
         }
 
-        createParticle(x, y, color){
+        createParticle(x, y, color) {
             var p = {
                 x: x,
                 y: y + 10,
@@ -172,24 +183,24 @@
             };
             p.size = Utility.random(4, 16);
             p.vx = this.PARTICLE_VELOCITY_RANGE.x[0] + Math.random() *
-                    (this.PARTICLE_VELOCITY_RANGE.x[1] - this.PARTICLE_VELOCITY_RANGE.x[0]);
+                (this.PARTICLE_VELOCITY_RANGE.x[1] - this.PARTICLE_VELOCITY_RANGE.x[0]);
             p.vy = this.PARTICLE_VELOCITY_RANGE.y[0] + Math.random() *
-                    (this.PARTICLE_VELOCITY_RANGE.y[1] - this.PARTICLE_VELOCITY_RANGE.y[0]);
+                (this.PARTICLE_VELOCITY_RANGE.y[1] - this.PARTICLE_VELOCITY_RANGE.y[0]);
             return p;
         }
 
-        drawParticle(particle){
+        drawParticle(particle) {
             particle.vy += this.PARTICLE_GRAVITY;
             particle.x += particle.vx;
             particle.y += particle.vy;
 
             particle.alpha *= this.PARTICLE_ALPHA_FADEOUT;
-            var r = particle.size/2;
+            var r = particle.size / 2;
             this.ctx.fillStyle = 'rgba(' + particle.color[0] + ',' + particle.color[1] + ',' + particle.color[2] + ',' + particle.alpha + ')';
             this.ctx.beginPath();
             for (let i = 0; i < 5; i++) {
-                this.ctx.lineTo(Math.cos((18+i*72)/180*Math.PI)*r+particle.x,-Math.sin((18+i*72)/180*Math.PI)*r+particle.y);
-                this.ctx.lineTo(Math.cos((54+i*72)/180*Math.PI)*r/2.4+particle.x,-Math.sin((54+i*72)/180*Math.PI)*r/2.4+particle.y);
+                this.ctx.lineTo(Math.cos((18 + i * 72) / 180 * Math.PI) * r + particle.x, -Math.sin((18 + i * 72) / 180 * Math.PI) * r + particle.y);
+                this.ctx.lineTo(Math.cos((54 + i * 72) / 180 * Math.PI) * r / 2.4 + particle.x, -Math.sin((54 + i * 72) / 180 * Math.PI) * r / 2.4 + particle.y);
             }
             this.ctx.closePath();
             this.ctx.fill();
@@ -200,31 +211,32 @@
             super(ctx);
         }
 
-        spawnParticles(){
-            this.particles[0] = this.createParticle(this.cursorPos.left + 10, this.cursorPos.top, this.color);
+        spawnParticles() {
+            this.particles = this.particles.filter(x => x && x.alpha > 0.01);
+            this.particles.push(this.createParticle(this.cursorPos.left + 10, this.cursorPos.top, this.color));
         }
 
-        createParticle(x, y, color){
+        createParticle(x, y, color) {
             var p = {
                 x: x,
                 y: y + 10,
                 alpha: 1,
                 color: color
             };
-            p.vx = Utility.random(-1,1);
-            p.vy = Utility.random(-2,-1);
-            p.text = (config.texts && config.texts.length > 0 && config.texts[Utility.random(0, config.texts.length-1)]) || "hello";
+            p.vx = Utility.random(-1, 1);
+            p.vy = Utility.random(-2, -1);
+            p.text = (config.texts && config.texts.length > 0 && config.texts[Utility.random(0, config.texts.length - 1)]) || "hello";
             return p;
         }
 
-        drawParticle(particle){
+        drawParticle(particle) {
             particle.x += particle.vx;
             particle.y += particle.vy;
             particle.alpha *= this.PARTICLE_ALPHA_FADEOUT;
-        
+
             this.ctx.font = "14px Consolas, 'Courier New', monospace";
             this.ctx.fillStyle = 'rgba(' + particle.color[0] + ',' + particle.color[1] + ',' + particle.color[2] + ',' + particle.alpha + ')';
-            this.ctx.fillText(particle.text,particle.x,particle.y);       
+            this.ctx.fillText(particle.text, particle.x, particle.y);
         }
     }
     class HeartParticleEffectManager extends ParticleEffectManager {
@@ -232,7 +244,7 @@
             super(ctx);
         }
 
-        createParticle(x, y, color){
+        createParticle(x, y, color) {
             var p = {
                 x: x,
                 y: y + 10,
@@ -248,7 +260,7 @@
             return p;
         }
 
-        drawParticle(particle){
+        drawParticle(particle) {
             particle.x += particle.vx;
             particle.y += particle.vy;
             particle.vx *= particle.drag;
@@ -258,23 +270,23 @@
             particle.vy += Math.cos(particle.theta) * 0.1;
             particle.size *= 0.96;
             this.ctx.save();
-            this.ctx.translate(particle.x,particle.y);
+            this.ctx.translate(particle.x, particle.y);
             this.ctx.scale(particle.size, particle.size);
             this.ctx.beginPath();
-            this.ctx.arc(-1,0,1,Math.PI,0,false);
-            this.ctx.arc(1,0,1,Math.PI,0,false);
+            this.ctx.arc(-1, 0, 1, Math.PI, 0, false);
+            this.ctx.arc(1, 0, 1, Math.PI, 0, false);
             this.ctx.bezierCurveTo(1.9, 1.2, 0.6, 1.6, 0, 3.0);
-            this.ctx.bezierCurveTo( -0.6, 1.6,-1.9, 1.2,-2,0);
+            this.ctx.bezierCurveTo(-0.6, 1.6, -1.9, 1.2, -2, 0);
             this.ctx.closePath();
             this.ctx.fillStyle = 'rgba(' + particle.color[0] + ',' + particle.color[1] + ',' + particle.color[2] + ',' + particle.alpha + ')';
-            this.ctx.fill(); 
+            this.ctx.fill();
             this.ctx.restore();
         }
     }
     class ParticleManager {
-        constructor(ctx,effect) {
+        constructor(ctx, effect) {
             this.particleEffectManager = null;
-            switch(effect){
+            switch (effect) {
                 case 'rectangle':
                     this.particleEffectManager = new RectParticleEffectManager(ctx);
                     break;
@@ -309,13 +321,16 @@
             this.particleEffectManager.setCursorPositon(value);
         }
 
-        setColor(value){
+        setColor(value) {
             this.particleEffectManager.setColor(value);
         }
     }
     class EditorObserver {
         constructor(editor, editorContainer) {
-            this.cursorPos = { left: 0, top: 0 };
+            this.cursorPos = {
+                left: 0,
+                top: 0
+            };
             this.cursorOffsetTop = 0;
             this.shakeTime = 0;
             this.shakeTimeMax = 0;
@@ -331,10 +346,10 @@
             this.lines = [];
             this.cmNode = null;
             this.canvas = null;
-            this.ctx = null;       
+            this.ctx = null;
             if (editor && editorContainer) {
                 var canvas = editorContainer.querySelector('CANVAS#code-blast-canvas');
-                if(!canvas){
+                if (!canvas) {
                     canvas = document.createElement('canvas');
                     editorContainer.appendChild(canvas);
                 }
@@ -365,17 +380,19 @@
             this.shakeTime = this.shakeTimeMax = time;
         }
 
-        setParticlesColor(){
-            if(config && config.particleColor){
+        setParticlesColor() {
+            if (config && config.particleColor) {
                 this.particleManager.setColor(config.particleColor);
-            }else{
-                var particleColor = [0,0,0];
+            } else {
+                var particleColor = [0, 0, 0];
                 var bgColor = getComputedStyle(this.editor).backgroundColor;
-                if(bgColor){
+                if (bgColor) {
                     var rgbStr = /^rgb\(([0-9,\s]{7,})\)/.exec(bgColor);
-                    if(rgbStr && rgbStr.length > 1){
+                    if (rgbStr && rgbStr.length > 1) {
                         var rgb = rgbStr[1].split(',');
-                        rgb = rgb.map((x)=>{return parseInt(x);});
+                        rgb = rgb.map((x) => {
+                            return parseInt(x);
+                        });
                         particleColor = Utility.getAccessibleColor(rgb);
                         this.particleManager.setColor(config.particleColor);
                     }
@@ -384,7 +401,9 @@
         }
 
         loop() {
-            if (!this.isActive) { return; }
+            if (!this.isActive) {
+                return;
+            }
             this.ctx.clearRect(0, 0, this.w, this.h);
 
             var current_time = new Date().getTime();
@@ -416,8 +435,8 @@
             this.observer = new MutationObserver(function (mts) {
                 mts.forEach(function (mt) {
                     if (mt.type === "attributes" && mt.target.classList.contains("monaco-editor")) {
-                        if(id === mt.target.getAttribute('id')){
-                            if(mt.attributeName === "class"){
+                        if (id === mt.target.getAttribute('id')) {
+                            if (mt.attributeName === "class") {
                                 self.setParticlesColor();
                             }
                             if (self.canvas) {
@@ -426,7 +445,7 @@
                             }
                             self.w = mt.target.clientWidth;
                             self.h = mt.target.clientHeight;
-                        } 
+                        }
                     }
                     if (mt.type === "attributes" && mt.target.classList.contains("lines-content")) {
                         var top = getComputedStyle(mt.target).top;
@@ -477,9 +496,9 @@
                                     self.lines[index].data = text;
                                 } else {
                                     if (self.lines[index].data !== text) {
-                                        let isDebuging = _debugTool?(window.getComputedStyle(_debugTool).display === 'none'?false:true):false;
-                                        if(!isDebuging){
-                                            if(config && config.shake){
+                                        let isDebuging = _debugTool ? (window.getComputedStyle(_debugTool).display === 'none' ? false : true) : false;
+                                        if (!isDebuging) {
+                                            if (config && config.shake) {
                                                 self.cursorOffsetTop === lineTop && self.throttledShake(mt.target, 0.3);
                                             }
                                             self.throttledSpawnParticles(self.editor);
@@ -492,12 +511,17 @@
                     }
                 });
             });
-        
-            this.observer.observe(this.editor, option || { childList: true, attributes: true, characterData: true, subtree: true });
+
+            this.observer.observe(this.editor, option || {
+                childList: true,
+                attributes: true,
+                characterData: true,
+                subtree: true
+            });
         }
 
-        disconnect(){
-            if(this.observer){
+        disconnect() {
+            if (this.observer) {
                 this.observer.disconnect();
             }
         }
@@ -505,7 +529,7 @@
 
     var config = {};
     var _debugTool = null;
-    var observerMap= new Map();
+    var observerMap = new Map();
     let observer = new MutationObserver(function (mutations) {
         mutations.forEach(function (mutation) {
             if (mutation.target.classList.contains("editor-instance") && mutation.target.getAttribute("id") === "workbench.editors.files.textFileEditor") {
@@ -523,15 +547,15 @@
                             editorObserver.isActive = true;
                             editorObserver.loop();
                             editorObserver.observe();
-                        } 
+                        }
                     }
                 }
-                if(mutation.removedNodes && mutation.removedNodes.length > 0){
+                if (mutation.removedNodes && mutation.removedNodes.length > 0) {
                     var monaco_editor = mutation.removedNodes[0];
                     if (monaco_editor.classList.contains('monaco-editor')) {
                         var id = monaco_editor.getAttribute("id");
                         var editorObserver = observerMap.get(id);
-                        if(editorObserver){
+                        if (editorObserver) {
                             editorObserver.disconnect();
                             editorObserver = null;
                             observerMap.delete(id);
@@ -542,5 +566,8 @@
         })
     });
 
-    observer.observe(document.body, { childList: true, subtree: true });
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
 })();
