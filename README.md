@@ -15,6 +15,7 @@
 ![](./images/effect3.gif)
 ![](./images/effect4.gif)
 ![](./images/effect5.gif)
+![](./images/pac-man.gif)
 
 ## Extension Settings
 

@@ -2,7 +2,7 @@
     "name": "code-blast",
     "displayName": "code-blast",
     "description": "Particles blasts while typing in vscode with this extension",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "publisher": "fanxq",
     "repository": {
         "type": "git",
@@ -48,7 +48,8 @@
                         "rectangle",
                         "star",
                         "heart",
-                        "text"
+                        "text",
+                        "pac-man"
                     ],
                     "description":"Set particles shape. 设置粒子的形状。"
                 },
