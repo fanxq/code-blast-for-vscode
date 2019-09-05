@@ -11,3 +11,7 @@
 3. 新增粒子形状，新增了“heart”、“text”两种形状，当选择粒子形状为“text”时，可自定义需要显示的文字
 ## 0.0.7
 新增“pac-man”（吃豆人）动效
+## 0.0.8
+1. support for vscode 1.38.0
+2. add new effect
+3. fix bug

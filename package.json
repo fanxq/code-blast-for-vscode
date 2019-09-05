@@ -2,7 +2,7 @@
     "name": "code-blast",
     "displayName": "code-blast",
     "description": "Particles blasts while typing in vscode with this extension",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "publisher": "fanxq",
     "repository": {
         "type": "git",
@@ -20,45 +20,48 @@
     ],
     "main": "./extension",
     "contributes": {
-        "configuration":{
-            "type":"object",
+        "configuration": {
+            "type": "object",
             "title": "code-blast Configuration. code-blast插件的配置",
             "properties": {
-                "codeBlast.enabled":{
+                "codeBlast.enabled": {
                     "type": "boolean",
                     "default": true,
                     "description": "Enable the extension(code-blast). 是否启用code-blast。"
                 },
-                "codeBlast.shake.enabled":{
-                    "type":"boolean",
-                    "default":true,
+                "codeBlast.shake.enabled": {
+                    "type": "boolean",
+                    "default": true,
                     "description": "Enable shake effect. 是否启用shake效果。"
                 },
-                "codeBlast.particles.color":{
-                   "type":"string",
-                   "default":"",
-                   "pattern": "rgb\\s*\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*\\)",
-                   "description":  "Set particles color. 设置粒子的颜色，如rgb(0,0,0)。"
+                "codeBlast.particles.color": {
+                    "type": "string",
+                    "default": "",
+                    "pattern": "rgb\\s*\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*\\)",
+                    "description": "Set particles color. 设置粒子的颜色，如rgb(0,0,0)。"
                 },
-                "codeBlast.particles.shape":{
-                    "type":"string",
-                    "default":"dot",
+                "codeBlast.particles.shape": {
+                    "type": "string",
+                    "default": "dot",
                     "enum": [
                         "dot",
                         "rectangle",
                         "star",
                         "heart",
                         "text",
-                        "pac-man"
+                        "pac-man",
+                        "fire"
                     ],
-                    "description":"Set particles shape. 设置粒子的形状。"
+                    "description": "Set particles shape. 设置粒子的形状。"
                 },
-                "codeBlast.particles.texts":{
-                    "type":"array",
+                "codeBlast.particles.texts": {
+                    "type": "array",
                     "items": {
-                        "type":"string"
+                        "type": "string"
                     },
-                    "default":["hello world"],
+                    "default": [
+                        "hello world"
+                    ],
                     "description": "Set texts you like when setting the 'codeBlast.particles.shape' to 'text'.当粒子形状设置为'text'时，你可以自定义要显示的文本。"
                 }
             }
@@ -66,13 +69,17 @@
     },
     "scripts": {
         "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "node ./node_modules/vscode/bin/test"
+        "test": "node ./node_modules/vscode/bin/test",
+        "build": "webpack",
+        "pack": "webpack && vsce package"
     },
     "devDependencies": {
+        "@types/mocha": "^2.2.42",
+        "@types/node": "^7.0.43",
+        "eslint": "^4.6.1",
         "typescript": "^2.6.1",
         "vscode": "^1.1.6",
-        "eslint": "^4.6.1",
-        "@types/node": "^7.0.43",
-        "@types/mocha": "^2.2.42"
+        "webpack": "^4.35.3",
+        "webpack-cli": "^3.3.5"
     }
 }

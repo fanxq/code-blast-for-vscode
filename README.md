@@ -17,6 +17,8 @@
 ![](./images/effect5.gif)
 ![](./images/pac-man.gif)
 
+#### Support for vscode 1.38.0 and New effect in v0.0.8
+
 ## Extension Settings
 
 > configuration of this extension 该插件提供以下的设置

@@ -8,37 +8,41 @@ let indexDir = path.join(base, 'vs', 'workbench', 'electron-browser', 'bootstrap
 let indexFileName = "index.html";
 const extensionPath = vscode.extensions.getExtension('fanxq.code-blast').extensionPath;
 const configPath = path.join(extensionPath, 'code-blast-for-vscode/config.json');
-function showRestartWindowsInfo(info){
-    vscode.window.showInformationMessage(info, { title: "Restart vscode" })
-    .then(function (item) {
-        if (!item) return;
-        vscode.commands.executeCommand('workbench.action.reloadWindow');
-    });
+let isMinorVersionNumLessThan38 = true;
+
+function showRestartWindowsInfo(info) {
+    vscode.window.showInformationMessage(info, {
+            title: "Restart vscode"
+        })
+        .then(function (item) {
+            if (!item) return;
+            vscode.commands.executeCommand('workbench.action.reloadWindow');
+        });
 }
 
-function writeFileSync(filePath,fileContent){
+function writeFileSync(filePath, fileContent) {
     try {
-        fs.writeFileSync(filePath,fileContent,'utf8');
+        fs.writeFileSync(filePath, fileContent, 'utf8');
     } catch (error) {
         vscode.window.showWarningMessage('code-blast encountered a error during running, please reopen vscode with the administrator authority');
     }
 }
 
-class CodeBlast{
-    constructor(){
+class CodeBlast {
+    constructor() {
 
     }
-    copyFile(src,dst){
+    copyFile(src, dst) {
         fs.writeFileSync(dst, fs.readFileSync(src));
     }
-    install(isFirstLoad){
-        let hackFiles = ['codeBlast.js','shakeEffect.css'];
+    install(isFirstLoad) {
+        let hackFiles = ['codeBlast.js', 'shakeEffect.css'];
         let originalIndexFileName = path.join(indexDir, indexFileName);
         let indexFileContent = fs.readFileSync(originalIndexFileName).toString('utf8');
-        let isHack = fs.existsSync(path.join(indexDir,'codeBlast.js')) && indexFileContent && ~indexFileContent.indexOf('codeBlast.js');
-        let config  = vscode.workspace.getConfiguration('codeBlast');
-        if(isFirstLoad && !config.enabled){
-            config.update("enabled",true,true);
+        let isHack = fs.existsSync(path.join(indexDir, 'codeBlast.js')) && indexFileContent && ~indexFileContent.indexOf('codeBlast.js');
+        let config = vscode.workspace.getConfiguration('codeBlast');
+        if (isFirstLoad && !config.enabled) {
+            config.update("enabled", true, true);
             return;
         }
         let shakeEnabled = config.get('shake.enabled');
@@ -46,76 +50,80 @@ class CodeBlast{
         let particlesShape = config.get('particles.shape');
         let particlesTexts = config.get('particles.texts');
         let settings = this.getConfig();
-        if(config.enabled){
-            if(!isHack){
-                if(indexFileContent){
-                    if(indexFileContent.indexOf('shakeEffect.css') === -1){
-                        indexFileContent = indexFileContent.replace('</head>',`\t<link rel="stylesheet" href="shakeEffect.css"></head>`);
+        if (config.enabled) {
+            if (!isHack) {
+                if (indexFileContent) {
+                    if (indexFileContent.indexOf('shakeEffect.css') === -1) {
+                        indexFileContent = indexFileContent.replace('</head>', `\t<link rel="stylesheet" href="shakeEffect.css"></head>`);
                     }
-                    if(indexFileContent.indexOf('codeBlast.js') === -1){
-                        indexFileContent = indexFileContent.replace('</html>',`\t<script src="codeBlast.js"></script></html>`);
+                    if (indexFileContent.indexOf('codeBlast.js') === -1) {
+                        indexFileContent = indexFileContent.replace('</html>', `\t<script src="codeBlast.js"></script></html>`);
                     }
                     writeFileSync(originalIndexFileName, indexFileContent);
                 }
-                hackFiles.forEach((filename)=>{
-                    let srcFile = path.join(extensionPath, `code-blast-for-vscode/${filename}`);
+                hackFiles.forEach((filename) => {
+                    let srcFile = isMinorVersionNumLessThan38 && filename === 'codeBlast.js' ?
+                        path.join(extensionPath, `code-blast-for-vscode/old/${filename}`) :
+                        path.join(extensionPath, `code-blast-for-vscode/${filename}`);
                     let dstFile = path.join(indexDir, filename);
-                    this.copyFile(srcFile,dstFile);
+                    this.copyFile(srcFile, dstFile);
                 });
-               
-            } 
-            var isConfigChanged = false;
-            if(settings && typeof(settings.shake)!=='undefined' && settings.shake !== shakeEnabled){
-                settings.shake = shakeEnabled;
-                isConfigChanged = true; 
+
             }
-            if(settings && typeof(settings.color)!=='undefined' && settings.color !== particlesColor){
-                if(particlesColor){
+            var isConfigChanged = false;
+            if (settings && typeof (settings.shake) !== 'undefined' && settings.shake !== shakeEnabled) {
+                settings.shake = shakeEnabled;
+                isConfigChanged = true;
+            }
+            if (settings && typeof (settings.color) !== 'undefined' && settings.color !== particlesColor) {
+                if (particlesColor) {
                     var rgbStr = /rgb\s*\((\s*\d+\s*,\s*\d+\s*,\s*\d+\s*)\)/.exec(particlesColor);
-                    if(rgbStr && rgbStr.length > 1){
+                    if (rgbStr && rgbStr.length > 1) {
                         var rgb = rgbStr[1].split(',');
-                        rgb = rgb.map((x)=>{return parseInt(x);});
+                        rgb = rgb.map((x) => {
+                            return parseInt(x);
+                        });
                         settings.rgb = rgbStr[1];
                         settings.color = particlesColor;
                         isConfigChanged = true;
                     }
                 }
             }
-            if(settings && typeof(settings.shape)!=='undefined' && settings.shape !== particlesShape){
+            if (settings && typeof (settings.shape) !== 'undefined' && settings.shape !== particlesShape) {
                 settings.shape = particlesShape;
                 isConfigChanged = true;
             }
-            if(settings && typeof(settings.customTexts)!=='undefined' && particlesTexts){
-                particlesTexts.forEach((x)=>{
+            if (settings && typeof (settings.customTexts) !== 'undefined' && particlesTexts) {
+                particlesTexts.forEach((x) => {
                     let text = x.trim();
-                    if(text && !settings.customTexts.includes(text)){
-                        settings.customTexts = particlesTexts.filter(y=>y.trim()).map(y=>y.trim());
+                    if (text && !settings.customTexts.includes(text)) {
+                        settings.customTexts = particlesTexts.filter(y => y.trim()).map(y => y.trim());
                         isConfigChanged = true;
                         return;
                     }
                 })
             }
-            if(isConfigChanged){
+            if (isConfigChanged) {
                 this.writeConfigToHackFile(settings);
                 this.saveConfig(settings);
-            } 
-            if(!isHack){
+            }
+            if (!isHack) {
                 this.writeConfigToHackFile(settings);
                 showRestartWindowsInfo("code-blast is enabled, please restart vscode!");
-            }else{
-                if(isConfigChanged){
+            } else {
+                if (isConfigChanged) {
                     showRestartWindowsInfo("configruation of code-blast is changed, please restart vscode!");
                 }
             }
-        }else{
-            if(isHack){
-                indexFileContent = indexFileContent.replace('\t<link rel="stylesheet" href="shakeEffect.css"></head>','</head>');
-                indexFileContent = indexFileContent.replace('\t<script src="codeBlast.js"></script></html>','</html>');
-                
+        } else {
+            if (isHack) {
+                indexFileContent = indexFileContent.replace('\t<link rel="stylesheet" href="shakeEffect.css"></head>', '</head>');
+                indexFileContent = indexFileContent.replace('\t<script src="codeBlast.js"></script></html>', '</html>');
+
                 writeFileSync(originalIndexFileName, indexFileContent);
-                hackFiles.forEach((filename)=>{
+                hackFiles.forEach((filename) => {
                     let hackFile = path.join(indexDir, filename);
-                    if(fs.existsSync(hackFile)){
+                    if (fs.existsSync(hackFile)) {
                         fs.unlinkSync(hackFile);
                     }
                 });
@@ -123,14 +131,14 @@ class CodeBlast{
             }
         }
     }
-    initialize(){
+    initialize() {
         let firstload = this.checkFirstload();
-        let isHack = fs.existsSync(path.join(indexDir,'codeBlast.js'));
+        let isHack = fs.existsSync(path.join(indexDir, 'codeBlast.js'));
         if (firstload || !isHack) {
             this.install(firstload);
         }
     }
-    checkFirstload(){
+    checkFirstload() {
         const configPath = path.join(extensionPath, 'code-blast-for-vscode/config.json');
         let info = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 
@@ -142,34 +150,34 @@ class CodeBlast{
 
         return false;
     }
-    saveConfig(settings){
-        if(settings && typeof(settings.firstload) !== undefined){
+    saveConfig(settings) {
+        if (settings && typeof (settings.firstload) !== undefined) {
             fs.writeFileSync(configPath, JSON.stringify(settings, null, '    '), 'utf-8');
         }
     }
 
-    writeConfigToHackFile(settings){
-        let configuration = 'var config = {}; ';
+    writeConfigToHackFile(settings) {
+        let configuration = '"use strict"; var _debugTool = null; var config = {}; ';
         configuration += `config.shake = ${settings.shake.toString()};`
-        if(settings.rgb){
+        if (settings.rgb) {
             configuration += `config.particleColor = [${settings.rgb}]; `;
         }
         configuration += `config.particleShape = '${settings.shape}';`;
 
         configuration += `config.texts = [${settings.customTexts.map(x=>'\"' + x + '\"').toString()}];`;
         let hackFile = path.join(extensionPath, 'code-blast-for-vscode/codeBlast.js');
-        let dstFile = path.join(indexDir,'codeBlast.js');
-        let fileContent =  fs.readFileSync(hackFile).toString('utf8');
-        fileContent = fileContent.replace("var config = {};",configuration);
+        let dstFile = path.join(indexDir, 'codeBlast.js');
+        let fileContent = fs.readFileSync(hackFile).toString('utf8');
+        fileContent = fileContent.replace("\"use strict\";", configuration);
         writeFileSync(dstFile, fileContent);
     }
 
-    getConfig(){
+    getConfig() {
         let settings = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
         return settings;
     }
 
-    watch(){
+    watch() {
         this.initialize();
         return vscode.workspace.onDidChangeConfiguration(() => this.install(false));
     }
@@ -185,9 +193,12 @@ function activate(context) {
     console.log(vscode.version);
     var versionInfos = vscode.version.split('.');
     var version = parseInt(versionInfos[1]);
-    if(version > 27){
-        indexDir = path.join(base, "vs", "code","electron-browser","workbench");
+    if (version > 27) {
+        indexDir = path.join(base, "vs", "code", "electron-browser", "workbench");
         indexFileName = "workbench.html";
+    }
+    if (version >= 38) {
+        isMinorVersionNumLessThan38 = false;
     }
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with  registerCommand
@@ -206,6 +217,5 @@ function activate(context) {
 exports.activate = activate;
 
 // this method is called when your extension is deactivated
-function deactivate() {
-}
+function deactivate() {}
 exports.deactivate = deactivate;
