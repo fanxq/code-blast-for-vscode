@@ -76,9 +76,9 @@ class EditorObserver {
             return parseInt(x);
           });
           particleColor = Utility.getAccessibleColor(rgb);
-          this.particleManager.setColor(config.particleColor);
         }
       }
+      this.particleManager.setColor(particleColor);
     }
   }
 
