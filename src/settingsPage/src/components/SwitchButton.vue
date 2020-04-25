@@ -2,6 +2,7 @@
   <button  
     class="switch"
     :class="{ active: isActive }"
+    :disabled="disabled"
     @click="toggle">
   </button>
 </template>
@@ -11,6 +12,10 @@ export default {
   name: 'SwitchButton',
   props: {
     value: {
+      type: Boolean,
+      default: false
+    },
+    disabled: {
       type: Boolean,
       default: false
     }
@@ -46,7 +51,7 @@ $themeColor: #219e32;
   &::before{
     content: '';
     position: absolute;
-    left: 5px;
+    left: 10px;
     top: 50%;
     transform: translateY(-50%);
     width: 10px;
@@ -60,7 +65,7 @@ $themeColor: #219e32;
     &::before {
       border-color: $themeColor;
       background-color: $themeColor;
-      left: calc(100% - 15px);
+      left: calc(100% - 20px);
       transition: left 0.3s ease;
     }
   }

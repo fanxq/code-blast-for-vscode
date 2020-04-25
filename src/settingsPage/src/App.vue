@@ -5,31 +5,38 @@
         <span>Enable extension</span>
         <SwitchButton v-model="isEnableExtension"/>
       </li>
-      <li>
+      <li :class="{disabled: !isEnableExtension}">
         <span>Enable shake animation</span>
-        <SwitchButton v-model="isEnableShake"/>
+        <SwitchButton v-model="isEnableShake" :disabled="!isEnableExtension"/>
       </li>
-      <li>
+      <li 
+        :class="{disabled: !isEnableExtension}"
+        id="otherOptions"
+      >
         <div class="row">
-         <div class="row">
-            <span>
-              <span>Pick an effect</span>
+          <div class="row">
+            <span class="option-item">
+              <span class="title">Pick an effect</span>
               <select v-model="selectedEffect">
                 <option v-for="(option, index) in effectList" :key="index">
                   {{option}}
                 </option>
               </select>
             </span>
-          <span v-show="!!~effectsWithColorSetting.indexOf(selectedEffect)">
-            <span>Pick a color</span>
-            <span class="color-picker-switch" :style="{backgroundColor: typeof selectedColor === 'object'? selectedColor.hex : selectedColor}" @click="toggleColorPicker">
-              <chrome-picker class="color-picker" v-show="isShowPicker" v-model="selectedColor"></chrome-picker>
+            <span class="option-item" v-show="!!~effectsWithColorSetting.indexOf(selectedEffect)">
+              <span class="title">Pick a color</span>
+              <span class="color-picker-switch" :style="{backgroundColor: typeof selectedColor === 'object'? selectedColor.hex : selectedColor}" @click="toggleColorPicker">
+                <chrome-picker class="color-picker" v-show="isShowPicker" v-model="selectedColor"></chrome-picker>
+              </span>
             </span>
-          </span>
-         </div>
-         <div class="editor-container">
-           <textarea id="editor" cols="30" rows="10"></textarea>
-         </div>
+          </div>
+          <div class="row option-item" v-show="selectedEffect === 'text'">
+            <span class="title">Input some text</span>
+            <input class="text-input" type="text">
+          </div>
+          <div class="editor-container">
+            <textarea id="editor" cols="30" rows="10" placeholder="write something to check the effect what you seleted"></textarea>
+          </div>
         </div>
       </li>
     </ul>
@@ -39,8 +46,13 @@
 <script>
 import SwitchButton from './components/SwitchButton';
 import { Chrome } from 'vue-color';
-const CaretCoordinates = require('textarea-caret-position');
-let editor;
+import TextareaInputObserver from './textareaInputObserver';
+let textareaInputObserver;
+window.config = {
+  particleShape: 'dot',
+  shake: false,
+  particleColor: [0, 0, 0]
+};
 export default {
   components:{
     SwitchButton,
@@ -60,27 +72,65 @@ export default {
   watch: {
     selectedColor(val) {
       console.log('selectedColor', val);
+      window.config.particleColor = this.hexToRgb(val.hex);
+      if (textareaInputObserver) {
+        textareaInputObserver.setParticlesColor();
+      }
+    },
+    selectedEffect(val) {
+      window.config.particleShape = val;
+      if (textareaInputObserver) {
+        textareaInputObserver.resetParticleManager(val);
+        textareaInputObserver.setParticlesColor();
+      }
+    },
+    isEnableShake(val) {
+      window.config.shake = val;
     }
   },
   mounted() {
     const editor = document.querySelector('#editor');
-    const coordinates = new CaretCoordinates(document.querySelector('#editor'));
-    document.querySelector('#editor').addEventListener('input', function () {
-      
-      let result = coordinates.get(this, this.selectionEnd);
-      console.log(result.top);
-      console.log(result.left);
-    });
+    textareaInputObserver = new TextareaInputObserver(editor, editor.parentNode);
+    textareaInputObserver.isActive = true;
+    textareaInputObserver.loop();
+    textareaInputObserver.observe();
+    document.querySelector('#otherOptions').addEventListener('click', this.clickHandler, true);
   },
   methods: {
     toggleColorPicker() {
       this.isShowPicker = !this.isShowPicker;
     },
+    hexToRgb(hexStr) {
+      let rgb = [0, 0, 0];
+      if (hexStr) {
+        hexStr = hexStr.slice(1);
+        rgb = [];
+        for (let i = 0; i < 6; i += 2) {
+          rgb.push(parseInt(hexStr.slice(i, i+2), 16));
+        }
+      }
+      return rgb;
+    },
+    clickHandler(event) {
+      if(event && !this.isEnableExtension) {
+        console.log(event);
+        event.pervent
+        event.stopPropagation();
+        return false;
+      }
+    }
+  },
+  destroyed() {
+    if (textareaInputObserver) {
+      textareaInputObserver.disconnect();
+    }
+    document.querySelector('#otherOptions').removeEventListener('click', this.clickHandler, true);
   }
 }
 </script>
 
 <style lang="scss">
+  @import '../../../code-blast-for-vscode/shakeEffect.css';
   .page {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -95,6 +145,12 @@ export default {
         justify-content: space-between;
         align-items: center;
         border-bottom: 1px solid #ccc;
+        &:last-child{
+          border: none;
+        }
+        &.disabled {
+          opacity: 0.35;
+        }
       }
       select {
         width: 120px;
@@ -107,24 +163,51 @@ export default {
       }
       .row {
         width: 100%;
-        .color-picker-switch {
-          display:inline-block;
-          width:26px;
-          height:26px;
-          position: relative;
-          .color-picker {
-            position: absolute;
-            left: 0;
-            top: 100%;
+        .option-item {
+          height: 40px;
+          display: inline-flex;
+          align-items: center;
+          margin-right: 30px;
+          .title {
+            display: inline-block;
+            margin-right: 10px;
+          }
+          .color-picker-switch {
+            display:inline-block;
+            width:20px;
+            height:20px;
+            border: 2px solid #ccc;
+            border-radius: 2px;
+            position: relative;
+            .color-picker {
+              position: absolute;
+              left: 0;
+              top: 100%;
+              z-index: 99999;
+            }
+          }
+          .text-input {
+            flex: 1;
+            border: 2px solid #ccc;
+            padding: 2px 4px;
+            border-radius: 3px;
+            height: 24px;
+            &:focus {
+              outline: none;
+            }
           }
         }
       }
       
       .editor-container{
         width: 100%;
+        position: relative;
+        margin-top: 10px;
         textarea {
+          box-sizing: border-box;
           width: 100%;
-          border: 1px solid #ccc;
+          padding: 5px;
+          border: 2px solid #ccc;
           border-radius: 4px;
           resize: none;
           &:focus{
