@@ -11,13 +11,12 @@
       </li>
       <li 
         :class="{disabled: !isEnableExtension}"
-        id="otherOptions"
       >
         <div class="row">
           <div class="row">
             <span class="option-item">
               <span class="title">Pick an effect</span>
-              <select v-model="selectedEffect">
+              <select v-model="selectedEffect" :disabled="!isEnableExtension">
                 <option v-for="(option, index) in effectList" :key="index">
                   {{option}}
                 </option>
@@ -32,14 +31,17 @@
           </div>
           <div class="row option-item" v-show="selectedEffect === 'text'">
             <span class="title">Input some text</span>
-            <input class="text-input" type="text">
+            <input class="text-input" type="text" :disabled="!isEnableExtension">
           </div>
           <div class="editor-container">
-            <textarea id="editor" cols="30" rows="10" placeholder="write something to check the effect what you seleted"></textarea>
+            <textarea :disabled="!isEnableExtension" id="editor" cols="30" rows="10" placeholder="write something to check the effect what you seleted"></textarea>
           </div>
         </div>
       </li>
     </ul>
+    <div>
+      <button class="btn center" @click="saveSettings">save</button>
+    </div>
   </main>
 </template>
 
@@ -53,6 +55,7 @@ window.config = {
   shake: false,
   particleColor: [0, 0, 0]
 };
+const vscode = acquireVsCodeApi();
 export default {
   components:{
     SwitchButton,
@@ -65,7 +68,7 @@ export default {
       selectedEffect: 'dot',
       effectList: ["dot", "rectangle", "star", "heart", "text", "pac-man", "fire"],
       effectsWithColorSetting: ['dot', 'rectangle', 'star', 'heart', 'text'],
-      selectedColor: '#000',
+      selectedColor: '#000000',
       isShowPicker: false,
     }
   },
@@ -94,10 +97,25 @@ export default {
     textareaInputObserver.isActive = true;
     textareaInputObserver.loop();
     textareaInputObserver.observe();
-    document.querySelector('#otherOptions').addEventListener('click', this.clickHandler, true);
+    
+    vscode.postMessage({
+      command: 'getConfig'
+    });
+    window.addEventListener('message', (event) => {
+      const config = event.data;
+      if (config) {
+        this.isEnableExtension = config.enabled;
+        this.isEnableShake = (config.shake && config.shake.enabled) || false;
+        this.selectedColor = (config.particles && config.particles.color && this.rgbToHex(config.particles.color)) || '#000000';
+        this.selectedEffect = (config.particles && config.particles.shape) || 'dot';
+      }
+    })
   },
   methods: {
     toggleColorPicker() {
+      if (!this.isEnableExtension) {
+        return;
+      }
       this.isShowPicker = !this.isShowPicker;
     },
     hexToRgb(hexStr) {
@@ -105,32 +123,56 @@ export default {
       if (hexStr) {
         hexStr = hexStr.slice(1);
         rgb = [];
-        for (let i = 0; i < 6; i += 2) {
+        for (let i = 0; i < hexStr.length; i += 2) {
           rgb.push(parseInt(hexStr.slice(i, i+2), 16));
         }
       }
       return rgb;
     },
-    clickHandler(event) {
-      if(event && !this.isEnableExtension) {
-        console.log(event);
-        event.pervent
-        event.stopPropagation();
-        return false;
+    rgbToHex(rgbStr) {
+      let hex = '#000000';
+      try {
+        const startPos = rgbStr.indexOf('(');
+        const endPos = rgbStr.indexOf(')');
+        let rgbValue = rgbStr.slice(startPos + 1, endPos);
+        rgbValue = rgbValue.split(',');
+        let hexArray = [];
+        rgbValue.forEach(x => {
+          let hexStr = Number(x).toString(16);
+          hexArray.push(hexStr.length === 1? `0${hexStr}` : hexStr);
+        });
+        hex = `#${hexArray.join('')}`;
+      } catch {
       }
+      return hex;
+    },
+    getSelectedColor() {
+      let colorValue = this.hexToRgb(typeof(this.selectedColor) === 'string'? this.selectedColor : this.selectedColor.hex);
+      return `rgb(${colorValue.toString()})`;
+    },
+    saveSettings() {
+      vscode.postMessage({
+        command: 'setConfig',
+        config: {
+          enabled: this.isEnableExtension,
+          'shake.enabled': this.isEnableShake,
+          'particles.color': this.getSelectedColor(),
+          'particles.shape': this.selectedEffect
+        }
+      });
     }
   },
   destroyed() {
     if (textareaInputObserver) {
       textareaInputObserver.disconnect();
     }
-    document.querySelector('#otherOptions').removeEventListener('click', this.clickHandler, true);
   }
 }
 </script>
 
 <style lang="scss">
   @import '../../../code-blast-for-vscode/shakeEffect.css';
+  $btnColor: #41b883;
   .page {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -214,6 +256,30 @@ export default {
             outline: none;
           }
         }
+      }
+    }
+    .btn {
+      outline: none;
+      height: 30px;
+      border-radius: 5px;
+      appearance: none;
+      background-color: transparent;
+      border: 2px solid $btnColor;
+      padding: 0 10px;
+      color: $btnColor;
+      user-select: none;
+      &:focus {
+        background-color: rgba($btnColor, $alpha: 0.3);
+      }
+      &:hover {
+        background-color: $btnColor;
+        border-color: $btnColor;
+        color: #fff;
+      }
+      &.center {
+        display: block;
+        width: 80px;
+        margin: 10px auto;
       }
     }
   }

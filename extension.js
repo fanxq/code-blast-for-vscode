@@ -9,6 +9,7 @@ let indexFileName = "index.html";
 const extensionPath = vscode.extensions.getExtension('fanxq.code-blast').extensionPath;
 const configPath = path.join(extensionPath, 'code-blast-for-vscode/config.json');
 let isMinorVersionNumLessThan38 = true;
+let isUpdatedBySettingsPage = false;
 
 function showRestartWindowsInfo(info) {
     vscode.window.showInformationMessage(info, {
@@ -200,16 +201,63 @@ function activate(context) {
     if (version >= 38) {
         isMinorVersionNumLessThan38 = false;
     }
-    // The command has been defined in the package.json file
-    // Now provide the implementation of the command with  registerCommand
-    // The commandId parameter must match the command field in package.json
+
+    let currentPanel = undefined;
     let disposable = vscode.commands.registerCommand('codeBlast.showSettingsPage', function () {
-        vscode.window.showInformationMessage('Hello World!');
+        const columnToShowIn = vscode.ViewColumn.Beside;
+        if (currentPanel) {
+            currentPanel.reveal(columnToShowIn);
+        } else {
+            currentPanel = vscode.window.createWebviewPanel(
+                'settingsPage',
+                'settings',
+                columnToShowIn, {
+                    enableScripts: true,
+                    retainContextWhenHidden: true,
+                }
+            );
+            const resourcePath = path.join(context.extensionPath, 'settingsPage', 'index.html');
+            const dirPath = path.dirname(resourcePath);
+            let html = fs.readFileSync(resourcePath, 'utf-8');
+            html = html.replace(/(<link.+?href="|<script.+?src="|<img.+?src=")(.+?)"/g, (m, $1, $2) => {
+                return $1 + vscode.Uri.file(path.resolve(dirPath, $2)).with({
+                    scheme: 'vscode-resource'
+                }).toString() + '"';
+            });
+            currentPanel.webview.html = html;
+
+            currentPanel.webview.onDidReceiveMessage(message => {
+                const codeBlastConfig = vscode.workspace.getConfiguration('codeBlast');
+                switch (message.command) {
+                    case 'getConfig':
+                        currentPanel.webview.postMessage(JSON.parse(JSON.stringify(codeBlastConfig)));
+                        break;
+                    case 'setConfig':
+                        if (message.config) {
+                            Object.keys(message.config).forEach(x => {
+                                codeBlastConfig.update(x, message.config[x], true);
+                            });
+                        }
+                        break;
+                    default:
+                        break;
+
+                }
+            }, undefined, context.subscriptions);
+
+            currentPanel.onDidDispose(
+                () => {
+                    currentPanel = undefined;
+                },
+                null,
+                context.subscriptions
+            );
+        }
     });
 
     context.subscriptions.push(disposable);
-    // let codeblast = new CodeBlast();
-    // context.subscriptions.push(codeblast.watch()); //remove for test
+    let codeblast = new CodeBlast();
+    context.subscriptions.push(codeblast.watch());
 }
 exports.activate = activate;
 

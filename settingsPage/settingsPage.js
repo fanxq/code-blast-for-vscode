@@ -117,7 +117,7 @@ var ___CSS_LOADER_AT_RULE_IMPORT_0___ = __webpack_require__(/*! -!../../../node_
 exports = ___CSS_LOADER_API_IMPORT___(false);
 exports.i(___CSS_LOADER_AT_RULE_IMPORT_0___);
 // Module
-exports.push([module.i, ".page {\n  font-family: 'Avenir', Helvetica, Arial, sans-serif;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n}\n.page .content {\n    width: 90%;\n    margin: 0 auto;\n    list-style: none;\n}\n.page .content li {\n      display: flex;\n      min-height: 60px;\n      justify-content: space-between;\n      align-items: center;\n      border-bottom: 1px solid #ccc;\n}\n.page .content li:last-child {\n        border: none;\n}\n.page .content li.disabled {\n        opacity: 0.35;\n}\n.page .content select {\n      width: 120px;\n      height: 30px;\n      border-radius: 5px;\n      border-width: 2px;\n}\n.page .content select:focus {\n        outline: none;\n}\n.page .content .row {\n      width: 100%;\n}\n.page .content .row .option-item {\n        height: 40px;\n        display: inline-flex;\n        align-items: center;\n        margin-right: 30px;\n}\n.page .content .row .option-item .title {\n          display: inline-block;\n          margin-right: 10px;\n}\n.page .content .row .option-item .color-picker-switch {\n          display: inline-block;\n          width: 20px;\n          height: 20px;\n          border: 2px solid #ccc;\n          border-radius: 2px;\n          position: relative;\n}\n.page .content .row .option-item .color-picker-switch .color-picker {\n            position: absolute;\n            left: 0;\n            top: 100%;\n            z-index: 99999;\n}\n.page .content .row .option-item .text-input {\n          flex: 1;\n          border: 2px solid #ccc;\n          padding: 2px 4px;\n          border-radius: 3px;\n          height: 24px;\n}\n.page .content .row .option-item .text-input:focus {\n            outline: none;\n}\n.page .content .editor-container {\n      width: 100%;\n      position: relative;\n      margin-top: 10px;\n}\n.page .content .editor-container textarea {\n        box-sizing: border-box;\n        width: 100%;\n        padding: 5px;\n        border: 2px solid #ccc;\n        border-radius: 4px;\n        resize: none;\n}\n.page .content .editor-container textarea:focus {\n          outline: none;\n}\n", ""]);
+exports.push([module.i, ".page {\n  font-family: 'Avenir', Helvetica, Arial, sans-serif;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n}\n.page .content {\n    width: 90%;\n    margin: 0 auto;\n    list-style: none;\n}\n.page .content li {\n      display: flex;\n      min-height: 60px;\n      justify-content: space-between;\n      align-items: center;\n      border-bottom: 1px solid #ccc;\n}\n.page .content li:last-child {\n        border: none;\n}\n.page .content li.disabled {\n        opacity: 0.35;\n}\n.page .content select {\n      width: 120px;\n      height: 30px;\n      border-radius: 5px;\n      border-width: 2px;\n}\n.page .content select:focus {\n        outline: none;\n}\n.page .content .row {\n      width: 100%;\n}\n.page .content .row .option-item {\n        height: 40px;\n        display: inline-flex;\n        align-items: center;\n        margin-right: 30px;\n}\n.page .content .row .option-item .title {\n          display: inline-block;\n          margin-right: 10px;\n}\n.page .content .row .option-item .color-picker-switch {\n          display: inline-block;\n          width: 20px;\n          height: 20px;\n          border: 2px solid #ccc;\n          border-radius: 2px;\n          position: relative;\n}\n.page .content .row .option-item .color-picker-switch .color-picker {\n            position: absolute;\n            left: 0;\n            top: 100%;\n            z-index: 99999;\n}\n.page .content .row .option-item .text-input {\n          flex: 1;\n          border: 2px solid #ccc;\n          padding: 2px 4px;\n          border-radius: 3px;\n          height: 24px;\n}\n.page .content .row .option-item .text-input:focus {\n            outline: none;\n}\n.page .content .editor-container {\n      width: 100%;\n      position: relative;\n      margin-top: 10px;\n}\n.page .content .editor-container textarea {\n        box-sizing: border-box;\n        width: 100%;\n        padding: 5px;\n        border: 2px solid #ccc;\n        border-radius: 4px;\n        resize: none;\n}\n.page .content .editor-container textarea:focus {\n          outline: none;\n}\n.page .btn {\n    outline: none;\n    height: 30px;\n    border-radius: 5px;\n    appearance: none;\n    background-color: transparent;\n    border: 2px solid #41b883;\n    padding: 0 10px;\n    color: #41b883;\n    user-select: none;\n}\n.page .btn:focus {\n      background-color: rgba(65, 184, 131, 0.3);\n}\n.page .btn:hover {\n      background-color: #41b883;\n      border-color: #41b883;\n      color: #fff;\n}\n.page .btn.center {\n      display: block;\n      width: 80px;\n      margin: 10px auto;\n}\n", ""]);
 // Exports
 module.exports = exports;
 
@@ -135,7 +135,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".switch[data-v-7e740620] {\n  height: 30px;\n  width: 60px;\n  border: 2px solid #ccc;\n  border-radius: 15px;\n  position: relative;\n  background-color: #ffffff;\n  outline: none;\n  appearance: none;\n}\n.switch[data-v-7e740620]::before {\n    content: '';\n    position: absolute;\n    left: 10px;\n    top: 50%;\n    transform: translateY(-50%);\n    width: 10px;\n    height: 10px;\n    border-radius: 100%;\n    background-color: #b7b7b7;\n    transition: left 0.3s ease;\n}\n.switch.active[data-v-7e740620] {\n    border-color: #219e32;\n}\n.switch.active[data-v-7e740620]::before {\n      border-color: #219e32;\n      background-color: #219e32;\n      left: calc(100% - 20px);\n      transition: left 0.3s ease;\n}\n", ""]);
+exports.push([module.i, ".switch[data-v-7e740620] {\n  height: 30px;\n  width: 60px;\n  border: 2px solid #ccc;\n  border-radius: 15px;\n  position: relative;\n  background-color: #ffffff;\n  outline: none;\n  appearance: none;\n}\n.switch[data-v-7e740620]::before {\n    content: '';\n    position: absolute;\n    left: 10px;\n    top: 50%;\n    transform: translateY(-50%);\n    width: 10px;\n    height: 10px;\n    border-radius: 100%;\n    background-color: #b7b7b7;\n    transition: left 0.3s ease;\n}\n.switch.active[data-v-7e740620] {\n    border-color: #41b883;\n}\n.switch.active[data-v-7e740620]::before {\n      border-color: #41b883;\n      background-color: #41b883;\n      left: calc(100% - 20px);\n      transition: left 0.3s ease;\n}\n", ""]);
 // Exports
 module.exports = exports;
 
@@ -926,6 +926,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 
@@ -936,6 +938,7 @@ window.config = {
   shake: false,
   particleColor: [0, 0, 0]
 };
+const vscode = acquireVsCodeApi();
 /* harmony default export */ __webpack_exports__["default"] = ({
   components:{
     SwitchButton: _components_SwitchButton__WEBPACK_IMPORTED_MODULE_0__["default"],
@@ -948,7 +951,7 @@ window.config = {
       selectedEffect: 'dot',
       effectList: ["dot", "rectangle", "star", "heart", "text", "pac-man", "fire"],
       effectsWithColorSetting: ['dot', 'rectangle', 'star', 'heart', 'text'],
-      selectedColor: '#000',
+      selectedColor: '#000000',
       isShowPicker: false,
     }
   },
@@ -977,10 +980,25 @@ window.config = {
     textareaInputObserver.isActive = true;
     textareaInputObserver.loop();
     textareaInputObserver.observe();
-    document.querySelector('#otherOptions').addEventListener('click', this.clickHandler, true);
+    
+    vscode.postMessage({
+      command: 'getConfig'
+    });
+    window.addEventListener('message', (event) => {
+      const config = event.data;
+      if (config) {
+        this.isEnableExtension = config.enabled;
+        this.isEnableShake = (config.shake && config.shake.enabled) || false;
+        this.selectedColor = (config.particles && config.particles.color && this.rgbToHex(config.particles.color)) || '#000000';
+        this.selectedEffect = (config.particles && config.particles.shape) || 'dot';
+      }
+    })
   },
   methods: {
     toggleColorPicker() {
+      if (!this.isEnableExtension) {
+        return;
+      }
       this.isShowPicker = !this.isShowPicker;
     },
     hexToRgb(hexStr) {
@@ -988,26 +1006,49 @@ window.config = {
       if (hexStr) {
         hexStr = hexStr.slice(1);
         rgb = [];
-        for (let i = 0; i < 6; i += 2) {
+        for (let i = 0; i < hexStr.length; i += 2) {
           rgb.push(parseInt(hexStr.slice(i, i+2), 16));
         }
       }
       return rgb;
     },
-    clickHandler(event) {
-      if(event && !this.isEnableExtension) {
-        console.log(event);
-        event.pervent
-        event.stopPropagation();
-        return false;
+    rgbToHex(rgbStr) {
+      let hex = '#000000';
+      try {
+        const startPos = rgbStr.indexOf('(');
+        const endPos = rgbStr.indexOf(')');
+        let rgbValue = rgbStr.slice(startPos + 1, endPos);
+        rgbValue = rgbValue.split(',');
+        let hexArray = [];
+        rgbValue.forEach(x => {
+          let hexStr = Number(x).toString(16);
+          hexArray.push(hexStr.length === 1? `0${hexStr}` : hexStr);
+        });
+        hex = `#${hexArray.join('')}`;
+      } catch {
       }
+      return hex;
+    },
+    getSelectedColor() {
+      let colorValue = this.hexToRgb(typeof(this.selectedColor) === 'string'? this.selectedColor : this.selectedColor.hex);
+      return `rgb(${colorValue.toString()})`;
+    },
+    saveSettings() {
+      vscode.postMessage({
+        command: 'setConfig',
+        config: {
+          enabled: this.isEnableExtension,
+          'shake.enabled': this.isEnableShake,
+          'particles.color': this.getSelectedColor(),
+          'particles.shape': this.selectedEffect
+        }
+      });
     }
   },
   destroyed() {
     if (textareaInputObserver) {
       textareaInputObserver.disconnect();
     }
-    document.querySelector('#otherOptions').removeEventListener('click', this.clickHandler, true);
   }
 });
 
@@ -1119,168 +1160,157 @@ var render = function() {
         1
       ),
       _vm._v(" "),
-      _c(
-        "li",
-        {
-          class: { disabled: !_vm.isEnableExtension },
-          attrs: { id: "otherOptions" }
-        },
-        [
+      _c("li", { class: { disabled: !_vm.isEnableExtension } }, [
+        _c("div", { staticClass: "row" }, [
           _c("div", { staticClass: "row" }, [
-            _c("div", { staticClass: "row" }, [
-              _c("span", { staticClass: "option-item" }, [
-                _c("span", { staticClass: "title" }, [
-                  _vm._v("Pick an effect")
-                ]),
-                _vm._v(" "),
-                _c(
-                  "select",
-                  {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.selectedEffect,
-                        expression: "selectedEffect"
-                      }
-                    ],
-                    on: {
-                      change: function($event) {
-                        var $$selectedVal = Array.prototype.filter
-                          .call($event.target.options, function(o) {
-                            return o.selected
-                          })
-                          .map(function(o) {
-                            var val = "_value" in o ? o._value : o.value
-                            return val
-                          })
-                        _vm.selectedEffect = $event.target.multiple
-                          ? $$selectedVal
-                          : $$selectedVal[0]
-                      }
-                    }
-                  },
-                  _vm._l(_vm.effectList, function(option, index) {
-                    return _c("option", { key: index }, [
-                      _vm._v(
-                        "\n                " +
-                          _vm._s(option) +
-                          "\n              "
-                      )
-                    ])
-                  }),
-                  0
-                )
-              ]),
+            _c("span", { staticClass: "option-item" }, [
+              _c("span", { staticClass: "title" }, [_vm._v("Pick an effect")]),
               _vm._v(" "),
               _c(
-                "span",
+                "select",
                 {
                   directives: [
                     {
-                      name: "show",
-                      rawName: "v-show",
-                      value: !!~_vm.effectsWithColorSetting.indexOf(
-                        _vm.selectedEffect
-                      ),
-                      expression:
-                        "!!~effectsWithColorSetting.indexOf(selectedEffect)"
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.selectedEffect,
+                      expression: "selectedEffect"
                     }
                   ],
-                  staticClass: "option-item"
+                  attrs: { disabled: !_vm.isEnableExtension },
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.selectedEffect = $event.target.multiple
+                        ? $$selectedVal
+                        : $$selectedVal[0]
+                    }
+                  }
                 },
-                [
-                  _c("span", { staticClass: "title" }, [
-                    _vm._v("Pick a color")
-                  ]),
-                  _vm._v(" "),
-                  _c(
-                    "span",
-                    {
-                      staticClass: "color-picker-switch",
-                      style: {
-                        backgroundColor:
-                          typeof _vm.selectedColor === "object"
-                            ? _vm.selectedColor.hex
-                            : _vm.selectedColor
-                      },
-                      on: { click: _vm.toggleColorPicker }
-                    },
-                    [
-                      _c("chrome-picker", {
-                        directives: [
-                          {
-                            name: "show",
-                            rawName: "v-show",
-                            value: _vm.isShowPicker,
-                            expression: "isShowPicker"
-                          }
-                        ],
-                        staticClass: "color-picker",
-                        model: {
-                          value: _vm.selectedColor,
-                          callback: function($$v) {
-                            _vm.selectedColor = $$v
-                          },
-                          expression: "selectedColor"
-                        }
-                      })
-                    ],
-                    1
-                  )
-                ]
+                _vm._l(_vm.effectList, function(option, index) {
+                  return _c("option", { key: index }, [
+                    _vm._v(
+                      "\n                " + _vm._s(option) + "\n              "
+                    )
+                  ])
+                }),
+                0
               )
             ]),
             _vm._v(" "),
             _c(
-              "div",
+              "span",
               {
                 directives: [
                   {
                     name: "show",
                     rawName: "v-show",
-                    value: _vm.selectedEffect === "text",
-                    expression: "selectedEffect === 'text'"
+                    value: !!~_vm.effectsWithColorSetting.indexOf(
+                      _vm.selectedEffect
+                    ),
+                    expression:
+                      "!!~effectsWithColorSetting.indexOf(selectedEffect)"
                   }
                 ],
-                staticClass: "row option-item"
+                staticClass: "option-item"
               },
               [
-                _c("span", { staticClass: "title" }, [
-                  _vm._v("Input some text")
-                ]),
+                _c("span", { staticClass: "title" }, [_vm._v("Pick a color")]),
                 _vm._v(" "),
-                _c("input", {
-                  staticClass: "text-input",
-                  attrs: { type: "text" }
-                })
+                _c(
+                  "span",
+                  {
+                    staticClass: "color-picker-switch",
+                    style: {
+                      backgroundColor:
+                        typeof _vm.selectedColor === "object"
+                          ? _vm.selectedColor.hex
+                          : _vm.selectedColor
+                    },
+                    on: { click: _vm.toggleColorPicker }
+                  },
+                  [
+                    _c("chrome-picker", {
+                      directives: [
+                        {
+                          name: "show",
+                          rawName: "v-show",
+                          value: _vm.isShowPicker,
+                          expression: "isShowPicker"
+                        }
+                      ],
+                      staticClass: "color-picker",
+                      model: {
+                        value: _vm.selectedColor,
+                        callback: function($$v) {
+                          _vm.selectedColor = $$v
+                        },
+                        expression: "selectedColor"
+                      }
+                    })
+                  ],
+                  1
+                )
               ]
-            ),
-            _vm._v(" "),
-            _vm._m(0)
+            )
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.selectedEffect === "text",
+                  expression: "selectedEffect === 'text'"
+                }
+              ],
+              staticClass: "row option-item"
+            },
+            [
+              _c("span", { staticClass: "title" }, [_vm._v("Input some text")]),
+              _vm._v(" "),
+              _c("input", {
+                staticClass: "text-input",
+                attrs: { type: "text", disabled: !_vm.isEnableExtension }
+              })
+            ]
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "editor-container" }, [
+            _c("textarea", {
+              attrs: {
+                disabled: !_vm.isEnableExtension,
+                id: "editor",
+                cols: "30",
+                rows: "10",
+                placeholder:
+                  "write something to check the effect what you seleted"
+              }
+            })
           ])
-        ]
+        ])
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", [
+      _c(
+        "button",
+        { staticClass: "btn center", on: { click: _vm.saveSettings } },
+        [_vm._v("save")]
       )
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "editor-container" }, [
-      _c("textarea", {
-        attrs: {
-          id: "editor",
-          cols: "30",
-          rows: "10",
-          placeholder: "write something to check the effect what you seleted"
-        }
-      })
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 

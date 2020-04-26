@@ -16,14 +16,15 @@
         "Other"
     ],
     "activationEvents": [
-        "*"
+        "onCommand:codeBlast.showSettingsPage"
     ],
     "main": "./extension",
     "contributes": {
         "commands": [
             {
                 "command": "codeBlast.showSettingsPage",
-                "title": "code-blast settings"
+                "title": "Open Settings Page",
+                "category": "CodeBlast"
             }
         ],
         "configuration": {

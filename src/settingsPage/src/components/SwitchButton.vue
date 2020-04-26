@@ -38,7 +38,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$themeColor: #219e32;
+$themeColor: #41b883;
 .switch{
   height: 30px;
   width: 60px;
