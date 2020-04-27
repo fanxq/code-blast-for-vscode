@@ -3,6 +3,7 @@
 const vscode = require('vscode');
 const path = require('path');
 const fs = require('fs');
+const EventEmitter = require('events').EventEmitter;
 const base = path.dirname(require.main.filename);
 let indexDir = path.join(base, 'vs', 'workbench', 'electron-browser', 'bootstrap');
 let indexFileName = "index.html";
@@ -10,8 +11,17 @@ const extensionPath = vscode.extensions.getExtension('fanxq.code-blast').extensi
 const configPath = path.join(extensionPath, 'code-blast-for-vscode/config.json');
 let isMinorVersionNumLessThan38 = true;
 let isUpdatedBySettingsPage = false;
+let emitter = new EventEmitter();
+
+emitter.addListener('updateConfigFinish', () => {
+    isUpdatedBySettingsPage = false;
+    showRestartWindowsInfo("configruation of code-blast is changed, please restart vscode!");
+})
 
 function showRestartWindowsInfo(info) {
+    if (isUpdatedBySettingsPage) {
+        return; //由设置页更新的配置，不逐个显示消息提醒，统一在 updateConfigFinish Listener 那里只做一次显示
+    }
     vscode.window.showInformationMessage(info, {
             title: "Restart vscode"
         })
@@ -234,9 +244,11 @@ function activate(context) {
                         break;
                     case 'setConfig':
                         if (message.config) {
+                            isUpdatedBySettingsPage = true;
                             Object.keys(message.config).forEach(x => {
                                 codeBlastConfig.update(x, message.config[x], true);
                             });
+                            emitter.emit('updateConfigFinish');
                         }
                         break;
                     default:
