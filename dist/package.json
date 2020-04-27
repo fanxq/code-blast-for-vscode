@@ -97,11 +97,12 @@
         "vue-style-loader": "^4.1.2",
         "vue-template-compiler": "^2.6.11",
         "webpack": "^4.35.3",
-        "webpack-cli": "^3.3.5"
-    },
-    "dependencies": {
+        "webpack-cli": "^3.3.5",
         "textarea-caret-position": "^0.1.1",
         "vue": "^2.6.11",
         "vue-color": "^2.7.1"
+    },
+    "dependencies": {
+        
     }
 }
