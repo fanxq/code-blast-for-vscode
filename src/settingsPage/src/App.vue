@@ -25,14 +25,21 @@
             <span class="option-item" v-show="!!~effectsWithColorSetting.indexOf(selectedEffect)">
               <span class="title">Pick a color</span>
               <span class="color-picker-switch" :style="{backgroundColor: typeof selectedColor === 'object'? selectedColor.hex : selectedColor}" @click="toggleColorPicker">
-                <chrome-picker class="color-picker" v-show="isShowPicker" v-model="selectedColor"></chrome-picker>
+                <div class="color-picker-container" v-show="isShowPicker" @click.stop>
+                  <chrome-picker class="color-picker" v-model="selectedColor"></chrome-picker>
+                  <div class="btn-group">
+                    <button class="btn" @click="onColorPickerOK">OK</button>
+                    <button class="btn" @click="onColorPickerCancel">CANCEL</button>
+                  </div>
+                </div>
               </span>
             </span>
           </div>
           <div class="row option-item" v-show="selectedEffect === 'text'">
             <span class="title">Input some text</span>
-            <input class="text-input" type="text" :disabled="!isEnableExtension" v-model="customizeText">
+            <input class="text-input" type="text" :disabled="!isEnableExtension" v-model="customizeText" @blur="checkCustomizeText">
           </div>
+          <div class="error" v-show="error">{{error}}</div>
           <div class="editor-container">
             <textarea :disabled="!isEnableExtension" id="editor" cols="30" rows="10" placeholder="write something to check the effect what you seleted"></textarea>
           </div>
@@ -40,7 +47,7 @@
       </li>
     </ul>
     <div class="row">
-      <button class="btn center" @click="saveSettings">save</button>
+      <button class="btn center" @click="saveSettings">SAVE</button>
     </div>
   </main>
 </template>
@@ -70,8 +77,10 @@ export default {
       effectList: ["dot", "rectangle", "star", "heart", "text", "pac-man", "fire"],
       effectsWithColorSetting: ['dot', 'rectangle', 'star', 'heart', 'text'],
       selectedColor: '#000000',
+      prevSelectedColor: '#000000',
       customizeText: '',
       isShowPicker: false,
+      error: ''
     }
   },
   watch: {
@@ -120,6 +129,16 @@ export default {
         return;
       }
       this.isShowPicker = !this.isShowPicker;
+      if (this.isShowPicker) {
+        this.prevSelectedColor = this.selectedColor;
+      } 
+    },
+    onColorPickerOK() {
+      this.toggleColorPicker();
+    },
+    onColorPickerCancel() {
+      this.selectedColor = this.prevSelectedColor;
+      this.toggleColorPicker();
     },
     hexToRgb(hexStr) {
       let rgb = [0, 0, 0];
@@ -153,18 +172,24 @@ export default {
       let colorValue = this.hexToRgb(typeof(this.selectedColor) === 'string'? this.selectedColor : this.selectedColor.hex);
       return `rgb(${colorValue.toString()})`;
     },
+    checkCustomizeText() {
+      this.error = '';
+      let customizeText = this.customizeText.trim();
+      if (!customizeText) {
+        this.error = 'input is empty!';
+        return false;
+      }
+      if (!(/^[^,]+.*[^,]$/.test(customizeText))) {
+        this.error = 'incorrect format, each piece of text must be separated by a comma';
+        return false;
+      }
+      return true;
+    },
     saveSettings() {
       if (this.selectedEffect === 'text') {
-        let customizeText = this.customizeText.trim();
-        if (!customizeText) {
-          //todo 提示自定义文本为空
-          return;
-        }
-        if (!(/^[^,]+.*[^,]$/.test(customizeText))) {
-          //todo 提示格式错误
-          return;
-        }
+        this.checkCustomizeText();
       }
+      let customizeText = this.customizeText.trim();
       vscode.postMessage({
         command: 'setConfig',
         config: {
@@ -192,10 +217,12 @@ export default {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    padding: 40px 50px;
     .content {
       width: 90%;
       margin: 0 auto;
       list-style: none;
+      padding: 0;
       li {
         display: flex;
         min-height: 60px;
@@ -236,12 +263,27 @@ export default {
             border: 2px solid #ccc;
             border-radius: 2px;
             position: relative;
-            .color-picker {
+            .color-picker-container {
               position: absolute;
               left: 0;
               top: 100%;
+              margin-top: 3px;
               z-index: 99999;
+              border: 2px solid #ccc;
+              border-radius: 3px;
+              background-color: #fff;
+              .color-picker {
+                border: none;
+                box-shadow: none;
+              }
+              .btn-group {
+                display: flex;
+                padding: 5px;
+                justify-content: space-between;
+                align-items: center;
+              }
             }
+            
           }
           .text-input {
             flex: 1;
@@ -255,7 +297,11 @@ export default {
           }
         }
       }
-      
+      .error {
+        color: white;
+        padding: 2px;
+        background-color: rgb(255, 184, 184);
+      }
       .editor-container{
         width: 100%;
         position: relative;
