@@ -9,21 +9,35 @@ module.exports = {
     path: path.resolve(__dirname, '../dist/code-blast-for-vscode')
   },
   plugins: [
-    new CopyWebpackPlugin([{
-      from: path.resolve(__dirname, '../extension.js'),
-      to: path.resolve(__dirname, '../dist')
-    }, {
-      from: path.resolve(__dirname, '../code-blast-for-vscode/old/codeBlast.js'),
-      to: path.resolve(__dirname, '../dist/code-blast-for-vscode/old')
-    }, {
-      from: path.resolve(__dirname, '../code-blast-for-vscode/config.json'),
-      to: path.resolve(__dirname, '../dist/code-blast-for-vscode')
-    }, {
-      from: path.resolve(__dirname, '../code-blast-for-vscode/shakeEffect.css'),
-      to: path.resolve(__dirname, '../dist/code-blast-for-vscode')
-    }, {
-      from: path.resolve(__dirname, '../package.json'),
-      to: path.resolve(__dirname, '../dist')
-    }])
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, '../extension.js'),
+        to: path.resolve(__dirname, '../dist')
+      }, {
+        from: path.resolve(__dirname, '../code-blast-for-vscode/old/codeBlast.js'),
+        to: path.resolve(__dirname, '../dist/code-blast-for-vscode/old')
+      }, {
+        from: path.resolve(__dirname, '../code-blast-for-vscode/config.json'),
+        to: path.resolve(__dirname, '../dist/code-blast-for-vscode')
+      }, {
+        from: path.resolve(__dirname, '../code-blast-for-vscode/shakeEffect.css'),
+        to: path.resolve(__dirname, '../dist/code-blast-for-vscode')
+      }, {
+        from: path.resolve(__dirname, '../package.json'),
+        to: path.resolve(__dirname, '../dist')
+      }, {
+        from: path.resolve(__dirname, '../images/icon.png'),
+        to: path.resolve(__dirname, '../dist')
+      }, {
+        from: path.resolve(__dirname, '../CHANGELOG.md'),
+        to: path.resolve(__dirname, '../dist')
+      }, {
+        from: path.resolve(__dirname, '../README.md'),
+        to: path.resolve(__dirname, '../dist')
+      }, {
+        from: path.resolve(__dirname, '../images'),
+        to: path.resolve(__dirname, '../dist/images')
+      }
+    ])
   ]
 };

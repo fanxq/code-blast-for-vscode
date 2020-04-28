@@ -31,7 +31,7 @@
           </div>
           <div class="row option-item" v-show="selectedEffect === 'text'">
             <span class="title">Input some text</span>
-            <input class="text-input" type="text" :disabled="!isEnableExtension">
+            <input class="text-input" type="text" :disabled="!isEnableExtension" v-model="customizeText">
           </div>
           <div class="editor-container">
             <textarea :disabled="!isEnableExtension" id="editor" cols="30" rows="10" placeholder="write something to check the effect what you seleted"></textarea>
@@ -39,7 +39,7 @@
         </div>
       </li>
     </ul>
-    <div>
+    <div class="row">
       <button class="btn center" @click="saveSettings">save</button>
     </div>
   </main>
@@ -53,7 +53,8 @@ let textareaInputObserver;
 window.config = {
   particleShape: 'dot',
   shake: false,
-  particleColor: [0, 0, 0]
+  particleColor: [0, 0, 0],
+  texts: ['hello world']
 };
 const vscode = acquireVsCodeApi();
 export default {
@@ -69,6 +70,7 @@ export default {
       effectList: ["dot", "rectangle", "star", "heart", "text", "pac-man", "fire"],
       effectsWithColorSetting: ['dot', 'rectangle', 'star', 'heart', 'text'],
       selectedColor: '#000000',
+      customizeText: '',
       isShowPicker: false,
     }
   },
@@ -108,6 +110,7 @@ export default {
         this.isEnableShake = (config.shake && config.shake.enabled) || false;
         this.selectedColor = (config.particles && config.particles.color && this.rgbToHex(config.particles.color)) || '#000000';
         this.selectedEffect = (config.particles && config.particles.shape) || 'dot';
+        this.customizeText = (config.particles && config.particles.texts) || 'hello world'
       }
     })
   },
@@ -151,13 +154,25 @@ export default {
       return `rgb(${colorValue.toString()})`;
     },
     saveSettings() {
+      if (this.selectedEffect === 'text') {
+        let customizeText = this.customizeText.trim();
+        if (!customizeText) {
+          //todo 提示自定义文本为空
+          return;
+        }
+        if (!(/^[^,]+.*[^,]$/.test(customizeText))) {
+          //todo 提示格式错误
+          return;
+        }
+      }
       vscode.postMessage({
         command: 'setConfig',
         config: {
           enabled: this.isEnableExtension,
           'shake.enabled': this.isEnableShake,
           'particles.color': this.getSelectedColor(),
-          'particles.shape': this.selectedEffect
+          'particles.shape': this.selectedEffect,
+          'particles.texts': customizeText.split(',')
         }
       });
     }

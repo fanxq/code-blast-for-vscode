@@ -45,7 +45,7 @@ $themeColor: #41b883;
   border: 2px solid #ccc;
   border-radius: 15px;
   position: relative;
-  // background-color: #ffffff;
+  background-color: transparent;
   outline: none;
   appearance: none;
   &::before{

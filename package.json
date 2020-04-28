@@ -8,7 +8,7 @@
         "type": "git",
         "url": "https://github.com/fanxq/code-blast-for-vscode.git"
     },
-    "icon": "images/icon.png",
+    "icon": "icon.png",
     "engines": {
         "vscode": "^1.26.0"
     },
@@ -16,6 +16,7 @@
         "Other"
     ],
     "activationEvents": [
+        "*",
         "onCommand:codeBlast.showSettingsPage"
     ],
     "main": "./extension",
@@ -79,29 +80,28 @@
         "test": "node ./node_modules/vscode/bin/test",
         "build": "webpack --mode=production --config ./config/codeblast.webpack.config.js",
         "build:settings": "webpack --mode=production --config ./config/settings.page.webpack.config.js",
-        "watch:settings": "webpack --config settingspage.webpack.config.js --watch",
         "pack": "npm run build:settings && npm run build && cd ./dist && vsce package"
     },
     "devDependencies": {
         "@types/mocha": "^2.2.42",
         "@types/node": "^7.0.43",
+        "clean-webpack-plugin": "^3.0.0",
         "copy-webpack-plugin": "^5.1.1",
         "css-loader": "^3.5.2",
         "eslint": "^4.6.1",
         "html-webpack-plugin": "^4.2.0",
         "node-sass": "^4.14.0",
         "sass-loader": "^8.0.2",
+        "textarea-caret-position": "^0.1.1",
         "typescript": "^2.6.1",
         "vscode": "^1.1.6",
+        "vue": "^2.6.11",
+        "vue-color": "^2.7.1",
         "vue-loader": "^15.9.1",
         "vue-style-loader": "^4.1.2",
         "vue-template-compiler": "^2.6.11",
         "webpack": "^4.35.3",
         "webpack-cli": "^3.3.5"
     },
-    "dependencies": {
-        "textarea-caret-position": "^0.1.1",
-        "vue": "^2.6.11",
-        "vue-color": "^2.7.1"
-    }
+    "dependencies": {}
 }
