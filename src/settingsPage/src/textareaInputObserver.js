@@ -8,6 +8,13 @@ class TextareaInputObserver extends BaseObserver {
     this.caretCoordinates = new CaretCoordinates(editor);
   }
 
+  updateCanvasSize(size) {
+    if(this.canvas && size) {
+      this.canvas.width = size.width;
+      this.canvas.height = size.height;
+    }
+  }
+
   resetParticleManager(effect) {
     this.particleManager = new EffectManager(this.ctx, effect);
     this.throttledSpawnParticles = Utility.throttle(this.particleManager.spawnParticles, 100).bind(this.particleManager);

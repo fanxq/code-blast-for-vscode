@@ -55,6 +55,7 @@
 <script>
 import SwitchButton from './components/SwitchButton';
 import { Chrome } from 'vue-color';
+import { bind, clear} from 'size-sensor';
 import TextareaInputObserver from './textareaInputObserver';
 let textareaInputObserver;
 window.config = {
@@ -86,7 +87,7 @@ export default {
   watch: {
     selectedColor(val) {
       console.log('selectedColor', val);
-      window.config.particleColor = this.hexToRgb(val.hex);
+      window.config.particleColor = this.hexToRgb(typeof val ==='string'? val : val.hex);
       if (textareaInputObserver) {
         textareaInputObserver.setParticlesColor();
       }
@@ -108,6 +109,16 @@ export default {
     textareaInputObserver.isActive = true;
     textareaInputObserver.loop();
     textareaInputObserver.observe();
+
+    bind(editor, element => {
+      let style = window.getComputedStyle(element);
+      if (textareaInputObserver) {
+        const size = {};
+        size.width = parseInt(style.width, 10);
+        size.height = parseInt(style.height, 10);
+        textareaInputObserver.updateCanvasSize(size);
+      }
+    });
     
     vscode.postMessage({
       command: 'getConfig'
@@ -183,6 +194,7 @@ export default {
         this.error = 'incorrect format, each piece of text must be separated by a comma';
         return false;
       }
+      window.config.texts = customizeText.split(',');
       return true;
     },
     saveSettings() {
@@ -206,6 +218,7 @@ export default {
     if (textareaInputObserver) {
       textareaInputObserver.disconnect();
     }
+    clear(document.querySelector('#editor'));
   }
 }
 </script>
