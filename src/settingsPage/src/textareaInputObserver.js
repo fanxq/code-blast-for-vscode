@@ -12,6 +12,8 @@ class TextareaInputObserver extends BaseObserver {
     if(this.canvas && size) {
       this.canvas.width = size.width;
       this.canvas.height = size.height;
+      this.w = size.width;
+      this.h = size.height;
     }
   }
 

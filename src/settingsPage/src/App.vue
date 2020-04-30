@@ -1,5 +1,6 @@
 <template>
   <main class="page">
+    <h1>Settings for code-blast</h1>
     <ul class="content">
       <li>
         <span>Enable extension</span>
@@ -116,6 +117,7 @@ export default {
         const size = {};
         size.width = parseInt(style.width, 10);
         size.height = parseInt(style.height, 10);
+        console.log(`size:(${size.width},${size.height})`);
         textareaInputObserver.updateCanvasSize(size);
       }
     });
@@ -125,12 +127,17 @@ export default {
     });
     window.addEventListener('message', (event) => {
       const config = event.data;
+      console.log(config);
       if (config) {
         this.isEnableExtension = config.enabled;
         this.isEnableShake = (config.shake && config.shake.enabled) || false;
         this.selectedColor = (config.particles && config.particles.color && this.rgbToHex(config.particles.color)) || '#000000';
         this.selectedEffect = (config.particles && config.particles.shape) || 'dot';
-        this.customizeText = (config.particles && config.particles.texts) || 'hello world'
+        this.customizeText = (config.particles && config.particles.texts) || 'hello world';
+        if (config.particles && config.particles.texts) {
+          this.customizeText = config.particles.texts.toString();
+          window.config.texts = config.particles.texts;
+        }
       }
     })
   },
@@ -231,6 +238,14 @@ export default {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     padding: 40px 50px;
+    max-width: 800px;
+    min-width: 300px;
+    margin: 0 auto;
+    h1 {
+      color: #41b883;
+      text-align: center;
+      font-size: 42px;
+    }
     .content {
       width: 90%;
       margin: 0 auto;
