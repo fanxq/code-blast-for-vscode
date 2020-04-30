@@ -53,6 +53,7 @@ class CodeBlast {
         let isHack = fs.existsSync(path.join(indexDir, 'codeBlast.js')) && indexFileContent && ~indexFileContent.indexOf('codeBlast.js');
         let config = vscode.workspace.getConfiguration('codeBlast');
         if (isFirstLoad && !config.enabled) {
+            console.log('update enable');
             config.update("enabled", true, true);
             return;
         }
@@ -145,6 +146,7 @@ class CodeBlast {
     initialize() {
         let firstload = this.checkFirstload();
         let isHack = fs.existsSync(path.join(indexDir, 'codeBlast.js'));
+        console.log(`firstload: ${firstload}, isHack: ${isHack}`);
         if (firstload || !isHack) {
             this.install(firstload);
         }
