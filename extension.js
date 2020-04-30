@@ -217,7 +217,8 @@ function activate(context) {
 
     let currentPanel = undefined;
     let disposable = vscode.commands.registerCommand('codeBlast.showSettingsPage', function () {
-        const columnToShowIn = vscode.ViewColumn.Beside;
+        const columnToShowIn = vscode.window.activeTextEditor? vscode.window.activeTextEditor.viewColumn : undefined;
+
         if (currentPanel) {
             currentPanel.reveal(columnToShowIn);
         } else {
