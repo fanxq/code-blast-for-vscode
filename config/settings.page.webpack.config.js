@@ -1,6 +1,9 @@
 const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const {
+  CleanWebpackPlugin
+} = require('clean-webpack-plugin');
 
 module.exports = {
   entry: path.resolve(__dirname, '../src/settingsPage/src/main.js'),
@@ -32,6 +35,10 @@ module.exports = {
     ]
   },
   plugins: [
+    new CleanWebpackPlugin({
+      verbose: true,
+      cleanOnceBeforeBuildPatterns: [path.resolve(__dirname, '../dist/**/*')]
+    }),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, '../src/settingsPage/template/index.html')
     }),

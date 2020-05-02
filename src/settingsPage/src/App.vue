@@ -58,6 +58,7 @@ import SwitchButton from './components/SwitchButton';
 import { Chrome } from 'vue-color';
 import { bind, clear} from 'size-sensor';
 import TextareaInputObserver from './textareaInputObserver';
+import Utility from '../../utility';
 let textareaInputObserver;
 window.config = {
   particleShape: 'dot',
@@ -90,6 +91,7 @@ export default {
       console.log('selectedColor', val);
       window.config.particleColor = this.hexToRgb(typeof val ==='string'? val : val.hex);
       if (textareaInputObserver) {
+        console.log(`color:${window.config.particleColor}`);
         textareaInputObserver.setParticlesColor();
       }
     },
@@ -131,7 +133,9 @@ export default {
       if (config) {
         this.isEnableExtension = config.enabled;
         this.isEnableShake = (config.shake && config.shake.enabled) || false;
-        this.selectedColor = (config.particles && config.particles.color && this.rgbToHex(config.particles.color)) || '#000000';
+        this.selectedColor = (config.particles && config.particles.color && this.rgbToHex(config.particles.color)) 
+          || this.rgbToHex(Utility.getAccessibleColor(this.hexToRgb(this.rgbToHex(window.getComputedStyle(document.body).backgroundColor))));
+        console.log(this.selectedColor);
         this.selectedEffect = (config.particles && config.particles.shape) || 'dot';
         this.customizeText = (config.particles && config.particles.texts) || 'hello world';
         if (config.particles && config.particles.texts) {
@@ -169,13 +173,19 @@ export default {
       }
       return rgb;
     },
-    rgbToHex(rgbStr) {
+    rgbToHex(rgbVal) {
       let hex = '#000000';
       try {
-        const startPos = rgbStr.indexOf('(');
-        const endPos = rgbStr.indexOf(')');
-        let rgbValue = rgbStr.slice(startPos + 1, endPos);
-        rgbValue = rgbValue.split(',');
+        let rgbValue;
+        if (typeof rgbVal === 'string') {
+          let rgbStr = rgbVal;
+          const startPos = rgbStr.indexOf('(');
+          const endPos = rgbStr.indexOf(')');
+          rgbValue = rgbStr.slice(startPos + 1, endPos);
+          rgbValue = rgbValue.split(',');
+        } else {
+          rgbValue = rgbVal;
+        }
         let hexArray = [];
         rgbValue.forEach(x => {
           let hexStr = Number(x).toString(16);
@@ -233,6 +243,21 @@ export default {
 <style lang="scss">
   @import '../../../code-blast-for-vscode/shakeEffect.css';
   $btnColor: #41b883;
+  body.vscode-light {
+    color: black;
+    
+  }
+
+  body.vscode-dark {
+    color: white;
+    textarea {
+      background-color: #5e5e5e;
+      color: white;
+      &::placeholder{
+        color: #e7e7e7;
+      }
+    }
+  }
   .page {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
