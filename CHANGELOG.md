@@ -15,3 +15,6 @@
 1. support for vscode 1.38.0
 2. add new effect
 3. fix bug
+## 0.0.9
+1. fix bug (修复首次安装该插件的用户，插件启用后没有粒子效果，而且编辑器抖动不止的问题)
+2. add settings page for code-blast (新增设置页，可以在设置页直接查看所选的效果，确定后才应用到插件)
