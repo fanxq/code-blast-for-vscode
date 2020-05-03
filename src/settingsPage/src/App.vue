@@ -41,8 +41,11 @@
             <input class="text-input" type="text" :disabled="!isEnableExtension" v-model="customizeText" @blur="checkCustomizeText">
           </div>
           <div class="error" v-show="error">{{error}}</div>
+          <h3>Playground</h3>
           <div class="editor-container">
-            <textarea :disabled="!isEnableExtension" id="editor" cols="30" rows="10" placeholder="write something to check the effect what you seleted"></textarea>
+            <textarea :disabled="!isEnableExtension" id="editor" cols="30" rows="10"
+               placeholder="This is the Playground to show what will the settings you selected look like. Typing in here, Try it.">
+            </textarea>
           </div>
         </div>
       </li>
@@ -242,7 +245,7 @@ export default {
 
 <style lang="scss">
   @import '../../../code-blast-for-vscode/shakeEffect.css';
-  $btnColor: #41b883;
+  $themeColor: #41b883;
   body.vscode-light {
     color: black;
     
@@ -267,7 +270,7 @@ export default {
     min-width: 300px;
     margin: 0 auto;
     h1 {
-      color: #41b883;
+      color: $themeColor;
       text-align: center;
       font-size: 42px;
     }
@@ -355,10 +358,14 @@ export default {
         padding: 2px;
         background-color: rgb(255, 184, 184);
       }
+       h3 {
+        color: $themeColor;
+      }
       .editor-container{
         width: 100%;
         position: relative;
         margin-top: 10px;
+       
         textarea {
           box-sizing: border-box;
           width: 100%;
@@ -378,16 +385,16 @@ export default {
       border-radius: 5px;
       appearance: none;
       background-color: transparent;
-      border: 2px solid $btnColor;
+      border: 2px solid $themeColor;
       padding: 0 10px;
-      color: $btnColor;
+      color: $themeColor;
       user-select: none;
       &:focus {
-        background-color: rgba($btnColor, $alpha: 0.3);
+        background-color: rgba($themeColor, $alpha: 0.3);
       }
       &:hover {
-        background-color: $btnColor;
-        border-color: $btnColor;
+        background-color: $themeColor;
+        border-color: $themeColor;
         color: #fff;
       }
       &.center {

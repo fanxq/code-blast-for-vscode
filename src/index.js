@@ -3,7 +3,7 @@ import EditorObserver from './editorObserver';
 var observerMap = new Map();
 let observer = new MutationObserver(function (mutations) {
   mutations.forEach(function (mutation) {
-    if (mutation.target.classList.contains("editor-instance") && mutation.target.getAttribute("data-editor-id") === "workbench.editors.files.textFileEditor") {
+    if (mutation.target.classList.contains("editor-instance")) {
       if (mutation.addedNodes && mutation.addedNodes.length > 0) {
         //_debugTool = document.querySelector('.debug-toolbar');
         var monaco_editor = mutation.addedNodes[0];
