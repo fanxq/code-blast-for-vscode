@@ -11,14 +11,18 @@ const extensionPath = vscode.extensions.getExtension('fanxq.code-blast').extensi
 const configPath = path.join(extensionPath, 'code-blast-for-vscode/config.json');
 let isMinorVersionNumLessThan38 = true;
 let isUpdatedBySettingsPage = false;
+let updateConfigCount = 0; // 配置变化的计数器
 let emitter = new EventEmitter();
+
 
 emitter.addListener('updateConfigFinish', () => {
     isUpdatedBySettingsPage = false;
+    console.log('updateConfigFinish', isUpdatedBySettingsPage);
     showRestartWindowsInfo("configruation of code-blast is changed, please restart vscode!");
 })
 
 function showRestartWindowsInfo(info) {
+    console.log('isUpdatedBySettingsPage', isUpdatedBySettingsPage);
     if (isUpdatedBySettingsPage) {
         return; //由设置页更新的配置，不逐个显示消息提醒，统一在 updateConfigFinish Listener 那里只做一次显示
     }
@@ -192,7 +196,12 @@ class CodeBlast {
 
     watch() {
         this.initialize();
-        return vscode.workspace.onDidChangeConfiguration(() => this.install(false));
+        return vscode.workspace.onDidChangeConfiguration(() => {
+            if (isUpdatedBySettingsPage) {
+                updateConfigCount++;
+            }
+            this.install(false)
+        });
     }
 }
 
@@ -219,7 +228,7 @@ function activate(context) {
 
     let currentPanel = undefined;
     let disposable = vscode.commands.registerCommand('codeBlast.showSettingsPage', function () {
-        const columnToShowIn = vscode.window.activeTextEditor? vscode.window.activeTextEditor.viewColumn : undefined;
+        const columnToShowIn = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined;
 
         if (currentPanel) {
             currentPanel.reveal(columnToShowIn);
@@ -251,10 +260,20 @@ function activate(context) {
                     case 'setConfig':
                         if (message.config) {
                             isUpdatedBySettingsPage = true;
+                            let updateConfigPromises = [];
                             Object.keys(message.config).forEach(x => {
-                                codeBlastConfig.update(x, message.config[x], true);
+                                updateConfigPromises.push(codeBlastConfig.update(x, message.config[x], true));
                             });
-                            emitter.emit('updateConfigFinish');
+                            Promise.all(updateConfigPromises).then(() => {
+                                if (updateConfigCount > 0) {
+                                    emitter.emit('updateConfigFinish');
+                                    updateConfigCount = 0;
+                                }
+                            }).catch(err => {
+                                console.log(err.message);
+                                isUpdatedBySettingsPage = false;
+                                updateConfigCount = 0;
+                            });
                         }
                         break;
                     default:
