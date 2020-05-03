@@ -17,7 +17,16 @@
 ![](./images/effect5.gif)
 ![](./images/pac-man.gif)
 
-#### Support for vscode 1.38.0 and New effect in v0.0.8
+## New feature in v0.0.9 - A Settings Page for code-blast
+#### How to use the settings page
+  1. press "ctrl+shift+p" to open the Command Palette
+  2. type 'CodeBlast' in the textbox of the Command Palette, and then the command "CodeBlast.showSettingsPage" will show up in the Command Palette
+  3. click the command to invoke it and then the Settings Page will show in the VSCode. in the Settings Page, you can see what will the settings you selected look like when you typing in the "Playground". click the "save" button to save the settings, then there will be a notification to ask for reloading the VSCode show up when the settings updated. after reloading the VSCode, the settings will apply to the editor.
+  
+![](./images/settingsPage.gif)
+
+
+
 
 ## Extension Settings
 
@@ -26,6 +35,7 @@
 * `codeBlast.shake.enabled`: 启用/禁用shake效果
 * `codeBlast.particles.color`: 设置粒子的颜色
 * `codeBlast.particles.shape`: 设置粒子的形状
+* `codeBlast.particles.texts`: 当设置粒子形状为text时，可以自定义要显示的文本
 
 ## Known Issues
 
