@@ -4,10 +4,13 @@ const vscode = require('vscode');
 const path = require('path');
 const fs = require('fs');
 const EventEmitter = require('events').EventEmitter;
+const chokidar = require('chokidar');
 const base = path.dirname(require.main.filename);
 let indexDir = path.join(base, 'vs', 'workbench', 'electron-browser', 'bootstrap');
 let indexFileName = "index.html";
 const extensionPath = vscode.extensions.getExtension('fanxq.code-blast').extensionPath;
+const extensionPackageJson = vscode.extensions.getExtension('fanxq.code-blast').packageJSON;
+const extensionStorePath = path.dirname(extensionPath);
 const configPath = path.join(extensionPath, 'code-blast-for-vscode/config.json');
 let isMinorVersionNumLessThan38 = true;
 let isUpdatedBySettingsPage = false;
@@ -42,6 +45,30 @@ function writeFileSync(filePath, fileContent) {
         vscode.window.showWarningMessage('code-blast encountered a error during running, please reopen vscode with the administrator authority');
     }
 }
+
+const extensionVersion = extensionPackageJson.version;
+class ObsoleteWatcher {
+    constructor() {
+
+    }
+    static fileChangedHandler(path) {
+        let fileContent = fs.readFileSync(path, 'utf8');
+        if (fileContent) {
+            console.log(`.obsolete: ${fileContent}`);
+            let obsoleteExtensions = JSON.parse(fileContent);
+            if (obsoleteExtensions[`fanxq.code-blast-${extensionVersion}`]) {
+                console.log('extension CodeBlast has been obsoleted');
+            }
+        } 
+    }
+    static watch() {
+        this.watcher.on('add', this.fileChangedHandler).on('change', this.fileChangedHandler);
+    }
+    static async unwatch() {
+        await this.watcher.close();
+    }
+}
+ObsoleteWatcher.watcher = chokidar.watch(path.join(extensionStorePath, '.obsolete'));
 
 class CodeBlast {
     constructor() {
@@ -154,6 +181,7 @@ class CodeBlast {
         if (firstload || !isHack) {
             this.install(firstload);
         }
+        ObsoleteWatcher.watch();
     }
     checkFirstload() {
         const configPath = path.join(extensionPath, 'code-blast-for-vscode/config.json');
@@ -298,5 +326,7 @@ function activate(context) {
 exports.activate = activate;
 
 // this method is called when your extension is deactivated
-function deactivate() {}
+function deactivate() {
+    ObsoleteWatcher.unwatch();
+}
 exports.deactivate = deactivate;
