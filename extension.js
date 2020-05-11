@@ -58,6 +58,10 @@ class ObsoleteWatcher {
             let obsoleteExtensions = JSON.parse(fileContent);
             if (obsoleteExtensions[`fanxq.code-blast-${extensionVersion}`]) {
                 console.log('extension CodeBlast has been obsoleted');
+                this.unwatch();
+                this.isObsolete = true;
+                let config = vscode.workspace.getConfiguration('codeBlast');
+                config.update('enabled', undefined, true);
             }
         } 
     }
@@ -68,11 +72,12 @@ class ObsoleteWatcher {
         await this.watcher.close();
     }
 }
+ObsoleteWatcher.isObsolete = false;
 ObsoleteWatcher.watcher = chokidar.watch(path.join(extensionStorePath, '.obsolete'));
 
 class CodeBlast {
     constructor() {
-
+        this.isConfigUpdatedAfterObsolete = false;
     }
     copyFile(src, dst) {
         fs.writeFileSync(dst, fs.readFileSync(src));
@@ -83,6 +88,9 @@ class CodeBlast {
         let indexFileContent = fs.readFileSync(originalIndexFileName).toString('utf8');
         let isHack = fs.existsSync(path.join(indexDir, 'codeBlast.js')) && indexFileContent && ~indexFileContent.indexOf('codeBlast.js');
         let config = vscode.workspace.getConfiguration('codeBlast');
+        if (this.isConfigUpdatedAfterObsolete) {
+            return;
+        }
         if (isFirstLoad && !config.enabled) {
             console.log('update enable');
             config.update("enabled", true, true);
@@ -170,7 +178,16 @@ class CodeBlast {
                         fs.unlinkSync(hackFile);
                     }
                 });
-                showRestartWindowsInfo("code-blast is disabled, please restart vscode!");
+                if (ObsoleteWatcher.isObsolete) {
+                    this.isConfigUpdatedAfterObsolete = true;
+                    config.update('shake.enabled', undefined, true);
+                    config.update('particles.color', undefined, true);
+                    config.update('particles.shape', undefined, true);
+                    config.update('particles.texts', undefined, true);
+                    showRestartWindowsInfo("code-blast has been removed, please restart vscode!");
+                } else {
+                    showRestartWindowsInfo("code-blast is disabled, please restart vscode!");
+                }
             }
         }
     }
