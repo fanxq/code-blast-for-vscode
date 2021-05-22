@@ -137,7 +137,7 @@ class EditorObserver {
           console.log(`changed by linesContent,x:${self.translateX},y:${self.translateY}`);
         }
 
-        if (mt.type == "attributes" && mt.target.className == "cursor ") {
+        if (mt.type == "attributes" && (mt.target.className === "cursor " || mt.target.className === "cursor monaco-mouse-cursor-text ")) {
           if (mt.attributeName === "style") {
             if (self.translateX == 0 && self.translateY == 0) {
               //var linesContent = document.querySelector(".editor-instance .lines-content");

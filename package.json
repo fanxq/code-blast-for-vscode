@@ -2,7 +2,7 @@
     "name": "code-blast",
     "displayName": "code-blast",
     "description": "Particles blasts while typing in vscode with this extension",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "publisher": "fanxq",
     "repository": {
         "type": "git",
