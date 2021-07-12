@@ -5,7 +5,7 @@ import StarParticleEffectManager from './starParticleEffectManager';
 import HeartParticleEffectManager from './heartParticleEffectManager';
 import PacManEffectManager from './pacManEffectManager';
 import FireParticleEffectManager from './fireParticeEffectManager';
-import ExplodeEffect from './explodeEffect';
+
 class EffectManager {
   constructor(ctx, effect) {
     this.particleEffectManager = null;
@@ -30,9 +30,6 @@ class EffectManager {
         break;
       case 'fire':
         this.particleEffectManager = new FireParticleEffectManager(ctx);
-        break;
-      case 'explode':
-        this.particleEffectManager = new ExplodeEffect(ctx);
         break;
       default:
         this.particleEffectManager = new RectParticleEffectManager(ctx);

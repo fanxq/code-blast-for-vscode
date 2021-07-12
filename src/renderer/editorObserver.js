@@ -57,9 +57,16 @@ class EditorObserver {
     this.observer = null;
   }
 
-  resetParticleManager(effect) {
-    this.particleManager = new EffectManager(this.ctx, effect);
+  resetParticleManager(updatedConfig) {
+    this.isActive = false;
+    if (config) {
+      config = updatedConfig;
+    } else {
+      config = Object.assign(config, updatedConfig);
+    }
+    this.particleManager = new EffectManager(this.ctx, updatedConfig.particleShape);
     this.throttledSpawnParticles = Utility.throttle(this.particleManager.spawnParticles, 100).bind(this.particleManager);
+    this.isActive = true;
   }
 
   shake(node, time) {

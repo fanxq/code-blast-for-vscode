@@ -1,0 +1,57 @@
+.shake{
+    animation: shakeAnimation  0.3s linear 0s infinite alternate;
+}
+
+@keyframes shakeAnimation{
+    from{
+        transform: none;
+    }
+    6.25%{
+        transform: translate(-2.7230666667140513px,-1.7230666667140513px)
+    }
+    12.5%{
+        transform: translate(0.5555333333177259px,1.555533333317726px);
+    }
+    18.75%{
+        transform: translate(-0.6132666666890145px,3.3867333333109855px);
+    }
+    25%{
+        transform: translate(-1.3360166666898294px,0.6639833333101706px);
+    }
+    31.25%{
+        transform: translate(0.9436500000059214px,-1.0563499999940786px);
+    }
+    37.5%{
+        transform: translate(-0.777700000006007px,1.222299999993993px);
+    }
+    43.75%{
+        transform: translate(2.5001333333420916px,2.5001333333420916px)
+    }
+    50%{
+        transform:  translate(0.7772999999797321px,1.777299999979732px);
+    }
+    56.25%{
+        transform: translate(-1.94683333333766px,2.05316666666234px);
+    }
+    62.5%{
+        transform: translate(0.3326166666180752px,-1.6673833333819248px);
+    }
+    68.75%{
+        transform: translate(-1.3893166666821344px,1.6106833333178656px);
+    }
+    75%{
+        transform: translate(0.8873666666404463px,0.8873666666404463px);
+    }
+    81.25%{
+        transform: translate(-0.836266666689577px,-0.836266666689577px);
+    }
+    87.5%{
+        transform: translate(0.44293333330278994px,-0.5570666666972101px);
+    }
+    93.75%{
+        transform: translate(-0.2791500000481997px,-0.2791500000481997px);
+    }
+    to{
+        transform: none;
+    }
+}

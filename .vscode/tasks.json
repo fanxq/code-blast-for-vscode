@@ -1,0 +1,36 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "watch",
+            "type": "shell",
+            "command": "node",
+            "args": [
+                "${workspaceFolder}/tasks/webpack.watch.js"
+            ],
+            "isBackground": true,
+            "dependsOn": [
+                "preLaunch"
+            ]
+        },
+        {
+            "label": "preLaunch",
+            "type": "shell",
+            "command": "node",
+            "args": [
+                "${workspaceFolder}/tasks/preLaunchTask.js",
+                "${execPath}",
+                "${workspaceFolder}"
+            ]
+        },
+        {
+            "label": "postDebug",
+            "type": "shell",
+            "command": "node",
+            "args": [
+                "${workspaceFolder}/tasks/postDebugTask.js",
+                "${execPath}"
+            ]
+        }
+    ]
+}

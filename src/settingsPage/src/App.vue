@@ -69,7 +69,15 @@ window.config = {
   particleColor: [0, 0, 0],
   texts: ['hello world']
 };
-const vscode = acquireVsCodeApi();
+// const vscode = acquireVsCodeApi();
+let vscode = {
+  postMessage: () => {},
+};
+try {
+  vscode = acquireVsCodeApi();
+} catch (error) {
+  console.log(error);
+}
 export default {
   components:{
     SwitchButton,
@@ -80,7 +88,7 @@ export default {
       isEnableExtension: false,
       isEnableShake: false,
       selectedEffect: 'dot',
-      effectList: ["dot", "rectangle", "star", "heart", "text", "pac-man", "fire"],
+      effectList: ["dot", "rectangle", "star", "heart", "text", "pac-man", "fire", "explode"],
       effectsWithColorSetting: ['dot', 'rectangle', 'star', 'heart', 'text'],
       selectedColor: '#000000',
       prevSelectedColor: '#000000',

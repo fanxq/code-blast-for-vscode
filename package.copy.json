@@ -1,12 +1,12 @@
 {
-    "name": "code-blast",
-    "displayName": "code-blast",
+    "name": "code-blast-debug",
+    "displayName": "code-blast-debug",
     "description": "Particles blasts while typing in vscode with this extension",
     "version": "0.0.10",
     "publisher": "fanxq",
     "repository": {
         "type": "git",
-        "url": "https://github.com/fanxq/code-blast-for-vscode.git"
+        "url": "https://github.com/fanxq/code-blast-debug-for-vscode.git"
     },
     "icon": "icon.png",
     "engines": {
@@ -22,25 +22,25 @@
     "contributes": {
         "configuration": {
             "type": "object",
-            "title": "code-blast Configuration. code-blast插件的配置",
+            "title": "code-blast-debug Configuration. code-blast-debug插件的配置",
             "properties": {
-                "codeBlast.enabled": {
+                "codeBlastDebug.enabled": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Enable the extension(code-blast). 是否启用code-blast。"
+                    "description": "Enable the extension(code-blast-debug). 是否启用code-blast-debug。"
                 },
-                "codeBlast.shake.enabled": {
+                "codeBlastDebug.shake.enabled": {
                     "type": "boolean",
                     "default": true,
                     "description": "Enable shake effect. 是否启用shake效果。"
                 },
-                "codeBlast.particles.color": {
+                "codeBlastDebug.particles.color": {
                     "type": "string",
                     "default": "",
                     "pattern": "rgb\\s*\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*\\)",
                     "description": "Set particles color. 设置粒子的颜色，如rgb(0,0,0)。"
                 },
-                "codeBlast.particles.shape": {
+                "codeBlastDebug.particles.shape": {
                     "type": "string",
                     "default": "dot",
                     "enum": [
@@ -54,7 +54,7 @@
                     ],
                     "description": "Set particles shape. 设置粒子的形状。"
                 },
-                "codeBlast.particles.texts": {
+                "codeBlastDebug.particles.texts": {
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -62,7 +62,7 @@
                     "default": [
                         "hello world"
                     ],
-                    "description": "Set texts you like when setting the 'codeBlast.particles.shape' to 'text'.当粒子形状设置为'text'时，你可以自定义要显示的文本。"
+                    "description": "Set texts you like when setting the 'codeBlastDebug.particles.shape' to 'text'.当粒子形状设置为'text'时，你可以自定义要显示的文本。"
                 }
             }
         }
