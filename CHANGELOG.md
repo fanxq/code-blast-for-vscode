@@ -24,3 +24,6 @@
 
 ## 0.0.10
 support for vscode 1.46.0
+
+## 0.0.11
+support for vscode 1.71.0

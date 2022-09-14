@@ -134,7 +134,7 @@ class CodeBlast {
         } else {
             if (isHack) {
                 indexFileContent = indexFileContent.replace('\t<link rel="stylesheet" href="shakeEffect.css"></head>', '</head>');
-                indexFileContent = indexFileContent.replace('\t<script src="codeBlast.js"></script></html>', '</html>');
+                indexFileContent = indexFileContent.replace(/\t<script src=\"codeBlast.js(\?v=.*)?\"><\/script><\/html>/, '</html>');
 
                 writeFileSync(originalIndexFileName, indexFileContent);
                 hackFiles.forEach((filename) => {
@@ -187,6 +187,11 @@ class CodeBlast {
         let fileContent = fs.readFileSync(hackFile).toString('utf8');
         fileContent = fileContent.replace("\"use strict\";", configuration);
         writeFileSync(dstFile, fileContent);
+        let workbenchFileContent = fs.readFileSync(path.join(indexDir, indexFileName), 'utf8');
+        if (workbenchFileContent && workbenchFileContent.indexOf('codeBlast.js') !== -1) {
+            workbenchFileContent = workbenchFileContent.replace(/(codeBlast.js(\?v=.*)?\")/, `codeBlast.js?v=${new Date().getTime()}\"` );
+            fs.writeFileSync(path.join(indexDir, indexFileName), workbenchFileContent, 'utf8');
+        }
     }
 
     getConfig() {
@@ -216,8 +221,12 @@ function activate(context) {
     var versionInfos = vscode.version.split('.');
     var version = parseInt(versionInfos[1]);
     if (version > 27) {
-        indexDir = path.join(base, "vs", "code", "electron-browser", "workbench");
+        indexDir = path.join(base, 'vs', 'code', 'electron-browser', 'workbench');
         indexFileName = "workbench.html";
+        const isExisted = fs.existsSync(indexDir);
+        if (!isExisted) {
+            indexDir = path.join(base, 'vs', 'code', 'electron-sandbox', 'workbench');
+        }
     }
     if (version >= 38) {
         isMinorVersionNumLessThan38 = false;
